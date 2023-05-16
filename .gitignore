@@ -1,0 +1,17 @@
+#Binary Files
+*.bin
+*.sys
+*.elf
+
+#The images
+*.img
+*.qcow2
+*.vmdk
+
+#Object files
+*.o
+
+
+docker_build_command.sh
+.gdb_history
+cscope.*
