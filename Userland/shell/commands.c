@@ -4,6 +4,7 @@
 #include <tron.h>
 #include <syscallsAPI.h>
 #include <color.h>
+#include <test_mm.h>
 
 // Prints on screen the help menu
 void help(args argsVec, int argsNum){
@@ -19,6 +20,7 @@ void help(args argsVec, int argsNum){
     printfColor(" *smalls -> Lets you zoom out\n",white);
     printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
     printfColor(" *help -> Prints this menu\n",white);
+    printfColor(" *memTest -> Run the memory manager Test\n",white);
 }
 
 // Prints on screen the registers of the screenshot taken previously
@@ -131,3 +133,6 @@ int calculateHours(){
 
 }
 
+void mem_test(args argsVec, int argsNum){
+    test_mm();
+}

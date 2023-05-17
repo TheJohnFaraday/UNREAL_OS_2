@@ -31,15 +31,17 @@ EXTERN sys_write
 EXTERN sys_memcpy
 EXTERN sys_print
 EXTERN sys_ticker 
+EXTERN sys_allocMem
 
 READ equ 0
 WRITE equ 1
 BEEP_INB equ 2
 BEEP_OUTB equ 3
 PRINT equ 4
-MEMCPY equ 6
 TICKER equ 5
+MEMCPY equ 6
 RTC equ 7
+MALLOC equ 8
 
 
 SECTION .text
@@ -209,6 +211,8 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .memcpy_handler
 	cmp rbx, RTC
 	je .rtc_handler
+	cmp rbx, MALLOC
+	je .malloc_handler
 
 .end_sys:
 	mov rsp,rbp
@@ -245,6 +249,10 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 
 .rtc_handler:
     call sys_accessRTC
+	jmp .end_sys	
+
+.malloc_handler:
+	call sys_allocMem
 	jmp .end_sys	
 
 _exception0Handler:

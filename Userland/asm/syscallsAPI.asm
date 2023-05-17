@@ -6,6 +6,7 @@ GLOBAL sys_memcpy_asm
 GLOBAL sys_inb_asm
 GLOBAL sys_out_asm
 GLOBAL sys_accessRTC_asm
+GLOBAL sys_malloc
 
 READ equ 0
 WRITE equ 1
@@ -15,6 +16,7 @@ PRINT equ 4
 MEMCPY equ 6
 TICKER equ 5
 RTC equ 7
+MALLOC equ 8
 
 SECTION .text
 
@@ -124,3 +126,15 @@ sys_accessRTC_asm: ; int sys_accessRTC(int fd)
     mov rsp,rbp
     pop rbp
     ret
+
+sys_malloc:        ; void * sys_malloc(size_t size)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi ;Passing arguments from C to syscall parameters
+    mov rdi, MALLOC
+    int 80h
+
+    mov rsp,rbp
+    pop rbp
+    ret    

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <color.h>
+#include <stdioAPI.h>
 
 #define STDIN  1
 #define STDOUT 1
@@ -26,4 +27,5 @@ extern int sys_memcpy_asm(uint64_t * dest, int length);
 extern uint8_t sys_inb_asm(uint16_t port);
 extern void sys_out_asm(uint16_t port, uint8_t data);
 extern int sys_accessRTC_asm(int fd);
+extern void * sys_malloc(size_t size);
 #endif

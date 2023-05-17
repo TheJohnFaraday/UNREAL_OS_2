@@ -1,6 +1,8 @@
 #ifndef SYSCALLS_H_
 #define SYSCALLS_H_
 
+#include <stddef.h>
+
 #define STDIN  1
 #define STDOUT 1
 #define STDERR 2
@@ -24,5 +26,6 @@ uint64_t sys_print(int fd, int length, int coor);
 uint64_t sys_ticker(int fd, int length);
 uint64_t sys_memcpy(uint64_t * dest, int length);
 uint64_t sys_accessRTC(int fd);
+uint64_t sys_allocMem(size_t size);
 
 #endif

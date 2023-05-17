@@ -8,6 +8,7 @@
 #include <color.h>
 #include <registorsSnapshot.h>
 
+
 extern uint64_t registerBuffer;
 
 //Here all the syscall handler functions
@@ -86,4 +87,8 @@ uint64_t sys_accessRTC(int fd){
         default:
             return -1;
     }
+}
+
+uint64_t sys_allocMem(size_t size){
+    return (uint64_t)allocMemory(size);
 }

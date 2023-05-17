@@ -4,6 +4,7 @@
 #include <moduleLoader.h>
 #include <idtLoader.h>
 #include <video.h>
+#include <MemoryManager.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -49,8 +50,9 @@ int main()
 {	
 	loadIdt();
 	setBackgroundColor();
+	//Initialize the memory
+	createMemoryManager((void *)START_MEM, (void *)START_MEM_USERS);
 	//Here we go to userland!
-	//printCharWithSize('I',2);
 	((EntryPoint)sampleCodeModuleAddress)();
 
 	return 0;
