@@ -136,3 +136,17 @@ int calculateHours(){
 void mem_test(args argsVec, int argsNum){
     test_mm();
 }
+
+void dump(args argsVec, int argsNum){
+    void * start_address = (void *)0x600000;
+    for (int i = 0; i < 1024; i++)
+    {
+        printfColor("%x",white,*((uint8_t *)start_address));
+        if(i % 100 == 0){
+            printfColor("\n",white);
+        }
+
+         start_address += sizeof(uint8_t);
+    }
+    
+}

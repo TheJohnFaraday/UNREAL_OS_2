@@ -234,5 +234,9 @@ void * memset(void * destiation, int32_t c, uint64_t length) {
 }
 
 void * malloc(size_t size){
-	return sys_malloc(size);
+	return sys_malloc_asm(size);
+}
+
+void free(void * ptr){
+	return sys_free_asm(ptr);
 }

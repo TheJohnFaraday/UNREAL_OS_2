@@ -27,5 +27,6 @@ uint64_t sys_ticker(int fd, int length);
 uint64_t sys_memcpy(uint64_t * dest, int length);
 uint64_t sys_accessRTC(int fd);
 uint64_t sys_allocMem(size_t size);
+void sys_free(void * ptr);
 
 #endif

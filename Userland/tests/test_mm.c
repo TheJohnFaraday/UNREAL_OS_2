@@ -48,12 +48,11 @@ void test_mm() {
         }
 
     // Free
-    /*
     for (i = 0; i < rq; i++){
       if (mm_rqs[i].address){
         free(mm_rqs[i].address);
       }
-    }*/
+    }
 
     printfColor("\nTest succesfully passed! :)\n", pink);
 }

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define COMMAND_NUMBER 11
+#define COMMAND_NUMBER 12
 #define MAX_PARAMS 4
 #define MAX_LENGHT 20
 #define ALIGNMENT 16
@@ -34,6 +34,7 @@ void clear(args argsVec, int argsNum);
 void biggie(args argsVec, int argsNum);
 void smalls(args argsVec, int argsNum);
 void mem_test(args argsVec, int argsNum);
+void dump(args argsVec, int argsNum);
 
 static commands_style commands[] = {
     {"biggie", biggie, 0},
@@ -46,7 +47,8 @@ static commands_style commands[] = {
     {"clear", clear, 0},
     {"tron",tron_command, 0},
     {"getContent", getContent, 1},
-    {"memTest", mem_test, 0}
+    {"memTest", mem_test, 0},
+    {"dum", dump, 0}
 };
 
 void invalidOpcodeTester();

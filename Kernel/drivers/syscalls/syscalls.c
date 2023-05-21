@@ -7,6 +7,7 @@
 #include <lib.h>
 #include <color.h>
 #include <registorsSnapshot.h>
+#include <MemoryManager.h>
 
 
 extern uint64_t registerBuffer;
@@ -91,4 +92,8 @@ uint64_t sys_accessRTC(int fd){
 
 uint64_t sys_allocMem(size_t size){
     return (uint64_t)allocMemory(size);
+}
+
+void sys_free(void * ptr){
+    return free(ptr);
 }
