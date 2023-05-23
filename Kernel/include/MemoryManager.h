@@ -2,6 +2,7 @@
 #define MEMORY_MANAGER_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #define START_MEM 0x500000
 #define START_MEM_USERS 0x600000
