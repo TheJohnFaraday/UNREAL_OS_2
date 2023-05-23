@@ -29,6 +29,21 @@ void *allocMemory(const size_t memoryToAllocate) {
         current_node = (Heap_Node *)current_mem_pos;
 
         if (current_node->size >= memoryToAllocate && current_node->status == FREE) {
+            // Splitting the node if there is enough space
+            if (current_node->size >= memoryToAllocate + sizeof(Heap_Node) + (size_t)MINIMUM_ALLOC_SIZE) {
+                Heap_Node *new_node = (Heap_Node *)(current_mem_pos + sizeof(Heap_Node) + memoryToAllocate);
+                new_node->size = current_node->size - memoryToAllocate - sizeof(Heap_Node);
+                new_node->status = FREE;
+
+                new_node->prev = current_node;
+                new_node->next = current_node->next;
+                if (current_node->next != NULL) {
+                    current_node->next->prev = new_node;
+                }
+                current_node->next = new_node;
+
+                current_node->size = memoryToAllocate;
+            }
             current_node->status = USED;
             return (void *)(current_node + 1);
         }
@@ -36,7 +51,7 @@ void *allocMemory(const size_t memoryToAllocate) {
         current_mem_pos += sizeof(Heap_Node) + current_node->size;
     }
 
-    // Saving the size and status of the new block
+    // Saving the size and status of the new block at the end of the list
     Heap_Node *new_node = (Heap_Node *)memoryManager->nextAddress;
     new_node->size = memoryToAllocate;
     new_node->status = USED;
