@@ -63,5 +63,26 @@ void free(void *ptr) {
 
     if (node->status == USED) {
         node->status = FREE;
+
+        // Coalescing adjacent free blocks
+        Heap_Node *prev_node = node->prev;
+        Heap_Node *next_node = node->next;
+
+        if (prev_node != NULL && prev_node->status == FREE) {
+            prev_node->next = next_node;
+            if (next_node != NULL) {
+                next_node->prev = prev_node;
+            }
+            prev_node->size += node->size + sizeof(Heap_Node);
+            node = prev_node;
+        }
+
+        if (next_node != NULL && next_node->status == FREE) {
+            node->next = next_node->next;
+            if (next_node->next != NULL) {
+                next_node->next->prev = node;
+            }
+            node->size += next_node->size + sizeof(Heap_Node);
+        }
     }
 }
