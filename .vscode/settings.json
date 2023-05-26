@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "memorymanager.h": "c",
+        "__hash_table": "c",
+        "functional": "c",
+        "memory": "c",
+        "mutex": "c",
+        "optional": "c",
+        "unordered_map": "c",
+        "vector": "c"
+    }
+}

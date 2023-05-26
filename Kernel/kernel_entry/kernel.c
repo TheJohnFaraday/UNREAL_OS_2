@@ -1,10 +1,10 @@
 #include <stdint.h>
-#include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <idtLoader.h>
 #include <video.h>
 #include <MemoryManager.h>
+#include <scheduler.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -52,8 +52,18 @@ int main()
 	setBackgroundColor();
 	//Initialize the memory
 	createMemoryManager((void *)START_MEM, (void *)START_MEM_USERS);
+	//Initialize the scheduler
+	initScheduler();
+
+	char * name[] = {"master"};
+	newProcess(sampleCodeModuleAddress, 1, name, 1,0);
+	// setBackgroundColor();
+	// __asm__("hlt");
+	// setBackgroundColor();
+	//Create the idle process
 	//Here we go to userland!
-	((EntryPoint)sampleCodeModuleAddress)();
+	//((EntryPoint)sampleCodeModuleAddress)();
+
 
 	return 0;
 }
