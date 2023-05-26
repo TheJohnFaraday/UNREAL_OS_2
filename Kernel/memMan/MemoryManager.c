@@ -21,11 +21,14 @@ void createMemoryManager(void *const restrict memoryForMemoryManager, void *cons
 }
 
 void *allocMemory(const size_t memoryToAllocate) {
+    if(memoryToAllocate == 0) {
+        return NULL;    
+    }
     // We start running through the memory in search for free "blocks"
     uint8_t *current_mem_pos = (void *)START_MEM_USERS;
 
     Heap_Node *current_node = NULL;
-    while (current_mem_pos < memoryManager->nextAddress) {
+    while (current_mem_pos < memoryManager->nextAddress && current_mem_pos < (uint8_t *)END_MEM) {
         current_node = (Heap_Node *)current_mem_pos;
 
         if (current_node->size >= memoryToAllocate && current_node->status == FREE) {
@@ -49,6 +52,10 @@ void *allocMemory(const size_t memoryToAllocate) {
         }
 
         current_mem_pos += sizeof(Heap_Node) + current_node->size;
+    }
+
+    if (current_mem_pos >= (uint8_t *)END_MEM) {
+        return NULL;  // No more memory available
     }
 
     // Saving the size and status of the new block at the end of the list
