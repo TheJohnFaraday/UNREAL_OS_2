@@ -33,6 +33,7 @@ EXTERN sys_print
 EXTERN sys_ticker 
 EXTERN sys_allocMem
 EXTERN sys_free
+EXTERN scheduler
 
 READ equ 0
 WRITE equ 1
@@ -166,6 +167,10 @@ timerRoutine: ;Timer tick handler
     pushState
 
 	call timer_handler
+
+	mov rdi,rsp
+	call scheduler
+	mov rsp, rax
 
 	; signal pic EOI (End of Interrupt)
 	endInterrupt
