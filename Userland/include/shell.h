@@ -2,6 +2,7 @@
 #define SHELL_H
 
 #include <commands.h>
+#include <stddef.h>
 
 #define ENTER '\x0d'
 #define SPACE " "

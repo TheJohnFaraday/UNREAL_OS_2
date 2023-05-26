@@ -43,7 +43,7 @@ void test_mm() {
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
-          printfColor("test_mm ERROR\n", white);
+          printfColor("test_mm ERROR: Problems with Block %d\n", white,i);
           return;
         }
 

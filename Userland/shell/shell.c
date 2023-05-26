@@ -6,7 +6,6 @@
 #include <tron.h>
 #include <color.h>
 
-#define NULL ((void*)0)
 
 void shell(){
     printfColor("Welcome to the shell!\n", yellow);
