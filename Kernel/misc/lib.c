@@ -90,13 +90,11 @@ char ** args(char ** argv, int argc){
       return buffer;
 }
 
-void strcpy(char * dest, char * src){
-    while (*src != '\0'){
-        *dest = *src;
-        dest++;
-        src++;
-    }
-    *dest = '\0';
+void strcpy(char *str1, char *str2){ 
+      int i;
+      for (i = 0; str1[i] != 0; i++)
+            str2[i] = str1[i];
+      str2[i] = 0;
 }
 
 void reverse(char* str, int length) {
