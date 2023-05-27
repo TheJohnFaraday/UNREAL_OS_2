@@ -13,11 +13,12 @@ typedef struct Heap_Node{
 } Heap_Node;
 
 static MemoryManagerADT memoryManager;
-static int first_time = 0;
+static int first_time;
 
 void createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
     memoryManager = (MemoryManagerADT)memoryForMemoryManager;
     memoryManager->nextAddress = managedMemory;
+    first_time = 0;
 }
 
 void *allocMemory(const size_t memoryToAllocate) {

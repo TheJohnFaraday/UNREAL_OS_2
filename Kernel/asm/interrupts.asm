@@ -34,6 +34,7 @@ EXTERN sys_ticker
 EXTERN sys_allocMem
 EXTERN sys_free
 EXTERN scheduler
+EXTERN sys_p_create
 
 READ equ 0
 WRITE equ 1
@@ -45,6 +46,7 @@ MEMCPY equ 6
 RTC equ 7
 MALLOC equ 8
 FREE equ 9
+P_CREATE equ 10
 
 
 SECTION .text
@@ -84,6 +86,46 @@ picSlaveMask:
 	pushStateSys
 	mov [stackAddrAfterPushState], rsp 
 %endmacro 	
+
+%macro timerPush 0
+	push rax      
+    push rbx      
+    push rcx      
+    push rdx      
+    push rbp      
+    push rdi      
+    push rsi      
+    push r8       
+    push r9       
+    push r10      
+    push r12     
+    push r11     
+    push r13     
+    push r14     
+    push r15     
+    push fs
+    push gs
+%endmacro
+
+%macro timerPop 0
+	pop gs
+    pop fs
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r9
+    pop r8
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rdx
+    pop rcx
+    pop rbx
+    pop rax
+%endmacro
 
 %macro pushStateSys 0
 	push rbx
@@ -164,7 +206,7 @@ picSlaveMask:
 %endmacro
 
 timerRoutine: ;Timer tick handler
-    pushState
+    timerPush
 
 	call timer_handler
 
@@ -175,7 +217,7 @@ timerRoutine: ;Timer tick handler
 	; signal pic EOI (End of Interrupt)
 	endInterrupt
 
-	popState
+	timerPop
 	iretq
 
 keyboardRoutine: ;Keyboard Interrupt handler
@@ -222,6 +264,8 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .malloc_handler
 	cmp rbx, FREE
 	je .free_handler
+	cmp rbx, P_CREATE
+	je .process_create_handler
 
 .end_sys:
 	mov rsp,rbp
@@ -267,6 +311,10 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 .free_handler:
 	call sys_free
 	jmp .end_sys
+
+.process_create_handler:
+	call sys_p_create
+	jmp .end_sys	
 
 _exception0Handler:
 	exceptionHandler 0

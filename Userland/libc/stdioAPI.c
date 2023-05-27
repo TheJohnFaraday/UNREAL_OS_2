@@ -240,3 +240,7 @@ void * malloc(size_t size){
 void free(void * ptr){
 	return sys_free_asm(ptr);
 }
+
+uint64_t p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd){
+	return sys_p_create_asm(entryPoint, argc, argv, fg, fd);
+}

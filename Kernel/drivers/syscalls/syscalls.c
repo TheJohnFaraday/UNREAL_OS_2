@@ -8,6 +8,7 @@
 #include <color.h>
 #include <registorsSnapshot.h>
 #include <MemoryManager.h>
+#include <scheduler.h>
 
 
 extern uint64_t registerBuffer;
@@ -96,4 +97,8 @@ uint64_t sys_allocMem(size_t size){
 
 void sys_free(void * ptr){
     return free(ptr);
+}
+
+uint64_t sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd){
+    return newProcess(entryPoint, argc, argv, fg, fd);
 }

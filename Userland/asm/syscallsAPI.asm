@@ -8,6 +8,7 @@ GLOBAL sys_out_asm
 GLOBAL sys_accessRTC_asm
 GLOBAL sys_malloc_asm
 GLOBAL sys_free_asm
+GLOBAL sys_p_create_asm
 
 READ equ 0
 WRITE equ 1
@@ -19,6 +20,7 @@ TICKER equ 5
 RTC equ 7
 MALLOC equ 8
 FREE equ 9
+P_CREATE equ 10
 
 SECTION .text
 
@@ -147,6 +149,18 @@ sys_free_asm:           ; sys_free_asm(void * ptr)
 
     mov rsi, rdi ;Passing arguments from C to syscall parameters
     mov rdi, FREE
+    int 80h
+
+    mov rsp,rbp
+    pop rbp
+    ret    
+
+sys_p_create_asm:       ; sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd);
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi ;Passing arguments from C to syscall parameters
+    mov rdi, P_CREATE
     int 80h
 
     mov rsp,rbp

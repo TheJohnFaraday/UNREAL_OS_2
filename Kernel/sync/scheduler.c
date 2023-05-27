@@ -8,6 +8,7 @@
 #define MAX_PRIORITY 40
 #define MAX_LEN 30
 
+//Each process is described like a node
 typedef struct PNode{
       struct PNode * next;
 
@@ -85,7 +86,7 @@ void initScheduler(){
       processQueue->prepared = 0;
 
 
-      //preparo función halt
+      //preparo función halt (The nule process)
       char *argv[] = {"hlt"};
       newProcess(&haltFunc, 1, argv, 0, 0);
       haltP = pDequeue();
@@ -161,22 +162,22 @@ void *scheduler(void * rsp){
  
       
       //si el proceso actual está listo y tiene ciclos, que siga
-            if (currentP->state == READY && ticks > 0){
-                  ticks--;
-                  return rsp;
-            }
+      if (currentP->state == READY && ticks > 0){
+            ticks--;
+            return rsp;
+      }
 
-            currentP->rsp = rsp;
-            if (currentP->pid != haltP->pid){
-                  if(currentP->state == KILLED) {
-                        PNode * fatherProcess = getProcess(currentP->ppid);
-                        if(fatherProcess != NULL && fatherProcess->state == BLOCKED) 
-                              unblock(fatherProcess->pid);
-                        freeP(currentP);
-                  } else {
-                        pEnqueue(currentP);
-                  }
+      currentP->rsp = rsp;
+      if (currentP->pid != haltP->pid){
+            if(currentP->state == KILLED) {
+                  PNode * fatherProcess = getProcess(currentP->ppid);
+                  if(fatherProcess != NULL && fatherProcess->state == BLOCKED) 
+                        unblock(fatherProcess->pid);
+                  freeP(currentP);
+            } else {
+                  pEnqueue(currentP);
             }
+      }
       
       if (processQueue->prepared > 0){
             PNode * aux;

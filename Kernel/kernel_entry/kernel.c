@@ -5,6 +5,7 @@
 #include <video.h>
 #include <MemoryManager.h>
 #include <scheduler.h>
+#include <interrupts.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -48,17 +49,17 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	loadIdt();
+	createMemoryManager((void *)START_MEM, (void *)START_MEM_USERS);
+	initScheduler();
 	setBackgroundColor();
 	//Initialize the memory
-	createMemoryManager((void *)START_MEM, (void *)START_MEM_USERS);
 	//Initialize the scheduler
-	initScheduler();
 
 	char * name[] = {"master"};
 	newProcess(sampleCodeModuleAddress, 1, name, 1,0);
+	loadIdt();
 	// setBackgroundColor();
-	// __asm__("hlt");
+	 _hlt();
 	// setBackgroundColor();
 	//Create the idle process
 	//Here we go to userland!
