@@ -19,6 +19,7 @@ void help(args argsVec, int argsNum){
     printfColor(" *biggie -> Lets you zoom in\n",white);
     printfColor(" *smalls -> Lets you zoom out\n",white);
     printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
+    printfColor(" *ps -> Report a snapshot of the current processes \n",white);
     printfColor(" *help -> Prints this menu\n",white);
     printfColor(" *memTest -> Run the memory manager Test\n",white);
 }
@@ -149,4 +150,8 @@ void dump(args argsVec, int argsNum){
          start_address += sizeof(uint8_t);
     }
     
+}
+
+void ps(args argsVec, int argsNum){
+    return p_display();
 }

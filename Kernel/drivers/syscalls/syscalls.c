@@ -102,3 +102,7 @@ void sys_free(void * ptr){
 uint64_t sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd){
     return newProcess(entryPoint, argc, argv, fg, fd);
 }
+
+void sys_processDisplay(){
+    return processDisplay();
+}

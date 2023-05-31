@@ -22,6 +22,7 @@ EXTERN timer_handler
 EXTERN exceptionDispatcher
 EXTERN fetchKeyboardEvent
 EXTERN syscallHandler
+EXTERN scheduler
 
 EXTERN sys_accessRTC
 EXTERN sys_read
@@ -33,8 +34,8 @@ EXTERN sys_print
 EXTERN sys_ticker 
 EXTERN sys_allocMem
 EXTERN sys_free
-EXTERN scheduler
 EXTERN sys_p_create
+EXTERN sys_processDisplay
 
 READ equ 0
 WRITE equ 1
@@ -47,6 +48,7 @@ RTC equ 7
 MALLOC equ 8
 FREE equ 9
 P_CREATE equ 10
+P_DISPLAY equ 11
 
 
 SECTION .text
@@ -266,6 +268,8 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .free_handler
 	cmp rbx, P_CREATE
 	je .process_create_handler
+	cmp rbx, P_DISPLAY
+	je .process_display_handler
 
 .end_sys:
 	mov rsp,rbp
@@ -315,6 +319,10 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 .process_create_handler:
 	call sys_p_create
 	jmp .end_sys	
+
+.process_display_handler:
+	call sys_processDisplay
+	jmp .end_sys
 
 _exception0Handler:
 	exceptionHandler 0

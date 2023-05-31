@@ -416,9 +416,9 @@ void printIndividualProcess(PNode * process){
             printString("     ");
             printString(itoa((uint64_t)process->rsp, buff, 16));
             emptyBuff(buff);
-            printString("     ");
+            printString("             ");
             printString(itoa((uint64_t)process->rbp, buff, 16));
-            printString("     ");
+            printString("             ");
             printString(stateName(process->state));
             printString("     ");
             printString(process->name);
@@ -427,7 +427,7 @@ void printIndividualProcess(PNode * process){
 }
 
 void processDisplay(){
-    printString("PID      FG       RSP              RBP              STATE        NAME");
+    printString("\nPID      FG       RSP              RBP              STATE        NAME");
     printNewline();
     if (currentP != NULL){
         printIndividualProcess(currentP);

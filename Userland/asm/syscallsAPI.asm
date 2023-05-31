@@ -9,6 +9,7 @@ GLOBAL sys_accessRTC_asm
 GLOBAL sys_malloc_asm
 GLOBAL sys_free_asm
 GLOBAL sys_p_create_asm
+GLOBAL sys_processDisplay_asm
 
 READ equ 0
 WRITE equ 1
@@ -21,6 +22,7 @@ RTC equ 7
 MALLOC equ 8
 FREE equ 9
 P_CREATE equ 10
+P_DISPLAY equ 11
 
 SECTION .text
 
@@ -170,3 +172,14 @@ sys_p_create_asm:       ; sys_p_create(void (*entryPoint)(int, char **), int arg
     mov rsp,rbp
     pop rbp
     ret    
+
+sys_processDisplay_asm:     ;sys_processDisplay_asm();
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, P_DISPLAY
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
