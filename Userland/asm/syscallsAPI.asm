@@ -159,6 +159,10 @@ sys_p_create_asm:       ; sys_p_create(void (*entryPoint)(int, char **), int arg
     push rbp
     mov rbp, rsp
 
+    mov r9,r8
+    mov r8,rcx 
+    mov rcx,rdx
+    mov rdx,rsi
     mov rsi, rdi ;Passing arguments from C to syscall parameters
     mov rdi, P_CREATE
     int 80h

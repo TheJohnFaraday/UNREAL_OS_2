@@ -54,7 +54,7 @@ int main()
 	setBackgroundColor();
 	//Initialize the memory
 	//Initialize the scheduler
-
+	
 	char * name[] = {"master"};
 	newProcess(sampleCodeModuleAddress, 1, name, 1,0);
 	loadIdt();
