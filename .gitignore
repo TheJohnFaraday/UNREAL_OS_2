@@ -13,6 +13,8 @@
 
 
 docker_build_command.sh
+.vscode/settings.json
+.bash_history
 .gdb_history
 cscope.*
 .vscode

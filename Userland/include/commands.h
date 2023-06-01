@@ -50,7 +50,15 @@ static commands_style commands[] = {
     {"getContent", getContent, 1},
     {"memTest", mem_test, 0},
     {"dum", dump, 0},
-    {"ps", ps, 0}
+    {"ps", ps, 0},
+    {"loop", loop, 1},
+    {"kill", kill, 1},
+    {"nice", nice, 2},
+    {"block", block, 1},
+    {"cat", cat, 0},
+    {"wc", wc, 0},
+    {"filter", filter, 0},
+    {"phylo", phylo, 0}
 };
 
 void invalidOpcodeTester();
