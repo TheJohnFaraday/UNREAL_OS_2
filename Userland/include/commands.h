@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define COMMAND_NUMBER 12
+#define COMMAND_NUMBER 22
 #define MAX_PARAMS 4
 #define MAX_LENGHT 20
 #define ALIGNMENT 16
@@ -15,7 +15,7 @@ typedef char args[MAX_PARAMS][MAX_LENGHT];
 typedef struct
 {
     char * name;
-    void (*function) (args, int);
+    void (*function) (int argsNum, args argsVec);
     int args;
 
 }commands_style;
@@ -23,18 +23,30 @@ typedef struct
 
 //static commands_style commands[COMMAND_NUMBER];
 
-void inforeg(args argsVec, int argsNum);
-void help(args argsVec, int argsNum);
-void div_zero_exception_tester(args argsVec, int argsNum);
-void invalid_opcode_exception_tester(args argsVec, int argsNum);
-void tron_command(args argsVec, int argsNum);
-void time(args argsVec, int argsNum);
-void getContent(args argsVec, int argsNum);
-void clear(args argsVec, int argsNum);
-void biggie(args argsVec, int argsNum);
-void smalls(args argsVec, int argsNum);
-void mem_test(args argsVec, int argsNum);
-void dump(args argsVec, int argsNum);
+void inforeg(int argsNum, char** argsVec);
+void help(int argsNum, char** argsVec);
+void div_zero_exception_tester(int argsNum, char** argsVec);
+void invalid_opcode_exception_tester(int argsNum, char** argsVec);
+void tron_command(int argsNum, char** argsVec);
+void time(int argsNum, char** argsVec);
+void getContent(int argsNum, char** argsVec);
+void clear(int argsNum, char** argsVec);
+void biggie(int argsNum, char** argsVec);
+void smalls(int argsNum, char** argsVec);
+void mem_test(int argsNum, char** argsVec);
+void proc_test(int argsNum, char** argsVec);
+void dump(int argsNum, char** argsVec);
+void ps(int argsNum, char** argsVec);
+void loop(int argsNum, char** argsVec);
+void kill_command(int argc, char** argv);
+void nice(int argsNum, char** argsVec);
+void block_command(int argsNum, char** argsVec);
+void cat(int argsNum, char** argsVec);
+void wc(int argsNum, char** argsVec);
+void filter(int argsNum, char** argsVec);
+void phylo(int argsNum, char** argsVec);
+
+
 
 static commands_style commands[] = {
     {"biggie", biggie, 0},
@@ -48,7 +60,17 @@ static commands_style commands[] = {
     {"tron",tron_command, 0},
     {"getContent", getContent, 1},
     {"memTest", mem_test, 0},
-    {"dum", dump, 0}
+    {"procTest", proc_test, 0},
+    {"dum", dump, 0},
+    {"ps", ps, 0},
+    {"loop", loop, 1},
+    {"kill", kill_command, 1},
+    {"nice", nice, 2},
+    {"block", block_command, 1},
+    {"cat", cat, 0},
+    {"wc", wc, 0},
+    {"filter", filter, 0},
+    {"phylo", phylo, 0}
 };
 
 void invalidOpcodeTester();

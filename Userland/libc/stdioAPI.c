@@ -233,10 +233,10 @@ void * memset(void * destiation, int32_t c, uint64_t length) {
 	return destiation;
 }
 
-void * malloc(size_t size){
-	return sys_malloc_asm(size);
-}
-
-void free(void * ptr){
-	return sys_free_asm(ptr);
+int atoi(char * str){
+	int res = 0;
+	for (int i = 0; str[i] != '\0'; ++i){
+		res = res*10 + str[i] - '0';
+	}
+	return res;
 }

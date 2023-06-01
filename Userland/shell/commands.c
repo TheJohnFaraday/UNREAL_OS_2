@@ -5,9 +5,11 @@
 #include <syscallsAPI.h>
 #include <color.h>
 #include <test_mm.h>
+#include <test_processes.h>
+#include <procLib.h>
 
 // Prints on screen the help menu
-void help(args argsVec, int argsNum){
+void help(int argsNum, char ** argsVec){
     printfColor("\n", white);
     printfColor("Command List:\n", white);
     printfColor(" *inforeg -> Prints the registers of screenshot taken previously\n",white);
@@ -19,12 +21,14 @@ void help(args argsVec, int argsNum){
     printfColor(" *biggie -> Lets you zoom in\n",white);
     printfColor(" *smalls -> Lets you zoom out\n",white);
     printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
+    printfColor(" *ps -> Report a snapshot of the current processes \n",white);
     printfColor(" *help -> Prints this menu\n",white);
     printfColor(" *memTest -> Run the memory manager Test\n",white);
+    printfColor(" *procTest -> Run the round robin scheduler Test\n",white);
 }
 
 // Prints on screen the registers of the screenshot taken previously
-void inforeg(args argsVec, int argsNum){
+void inforeg(int argsNum, char ** argsVec){
     uint64_t registerVector[REGISTERS] = {0};
     // Copy the registers to the vector from the screenshot
     sys_memcpy_asm(registerVector,REGISTERS);
@@ -52,7 +56,7 @@ void inforeg(args argsVec, int argsNum){
 static uint32_t font_size = 16;
 
 // Increases the font size
-void biggie(args argsVec, int argsNum)
+void biggie(int argsNum, char ** argsVec)
 {
 	if(font_size==8)
 		font_size = 16;
@@ -62,7 +66,7 @@ void biggie(args argsVec, int argsNum)
 }
 
 // Decreases the font size
-void smalls(args argsVec, int argsNum)
+void smalls(int argsNum, char ** argsVec)
 {
 	if(font_size==32)
 		font_size = 16;
@@ -72,28 +76,28 @@ void smalls(args argsVec, int argsNum)
 }
 
 // Function to test div zero exception
-void div_zero_exception_tester(args argsVec, int argsNum){
+void div_zero_exception_tester(int argsNum, char ** argsVec){
     int j=1,i=0;
     j=j/i;
 }
 
 // Function to test invalid opcode exception
-void invalid_opcode_exception_tester(args argsVec, int argsNum){
+void invalid_opcode_exception_tester(int argsNum, char ** argsVec){
     invalidOpcodeTester();
 }
 
 // Function to run tron
-void tron_command(args argsVec, int argsNum){
+void tron_command(int argsNum, char ** argsVec){
     tron();
 }
 
 // Clears shell
-void clear(args argsVec, int argsNum){
+void clear(int argsNum, char ** argsVec){
     clearScreen();
 }
 
 // Prints the 32 bytes of memory starting at the address passed as an argument
-void getContent(args argsVec, int argsNum){
+void getContent(int argsNum, char ** argsVec){
     char * address = (char *) argsVec[0];
     uintptr_t realAddress = (uintptr_t)hex2int(address);
     if (realAddress % ALIGNMENT != 0){
@@ -113,7 +117,7 @@ void getContent(args argsVec, int argsNum){
 }
 
 // Prints the current time
-void time(args argsVec, int argsNum){
+void time(int argsNum, char ** argsVec){
     printfColor("\n",white);
     while(1){
         if(sys_accessRTC_asm(GET_STATUS_REG_A) !=0x80){
@@ -133,11 +137,15 @@ int calculateHours(){
 
 }
 
-void mem_test(args argsVec, int argsNum){
+void mem_test(int argsNum, char ** argsVec){
     test_mm();
 }
 
-void dump(args argsVec, int argsNum){
+void proc_test(int argsNum, char ** argsVec){
+    test_processes();
+}   
+
+void dump(int argsNum, char ** argsVec){
     void * start_address = (void *)0x600000;
     for (int i = 0; i < 1024; i++)
     {
@@ -149,4 +157,115 @@ void dump(args argsVec, int argsNum){
          start_address += sizeof(uint8_t);
     }
     
+}
+
+void ps(int argsNum, char ** argsVec){
+    p_display();
+}
+
+void loop(int argsNum, char ** argsVec){
+    // print the ID every second
+    int seconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
+    while(1) {
+        if (sys_ticker_asm(GET_SECONDS_ELAPSED, 0) >= seconds + argsVec[0]) {
+            printfColor("PID: %d\n", white, sys_getPID_asm());
+            seconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
+        }
+    }
+}
+
+void kill_command(int argc, char ** argv){
+    
+    int pid = atoi(argv[1]);
+    printfColor("\nKilling process %d\n", white, pid);
+    sys_kill_asm(pid);
+}
+
+void nice(int argsNum, char ** argsVec){
+    //sys_nice_asm(argsVec[0], argsVec[1]);
+}
+
+void block_command(int argsNum, char ** argsVec){
+    sys_block_asm(*(uint64_t *)argsVec[0]);
+}
+
+void cat(int argsNum, char ** argsVec){
+    // char * filename = argsVec[0];
+    // int fd = sys_open_asm(filename);
+    // if(fd == -1){
+    //     printfColor("File not found\n", white);
+    //     return;
+    // }
+    // char buffer[100];
+    // int read = sys_read_asm(fd, buffer, 100);
+    // while(read > 0){
+    //     printfColor("%s", white, buffer);
+    //     read = sys_read_asm(fd, buffer, 100);
+    // }
+    // sys_close_asm(fd);
+}
+
+void wc(int argsNum, char ** argsVec){
+    // char * filename = argsVec[0];
+    // int fd = sys_open_asm(filename);
+    // if(fd == -1){
+    //     printfColor("File not found\n", white);
+    //     return;
+    // }
+    // char buffer[100];
+    // int read = sys_read_asm(fd, buffer, 100);
+    // int lines = 0;
+    // int words = 0;
+    // int chars = 0;
+    // while(read > 0){
+    //     for(int i = 0; i < read; i++){
+    //         if(buffer[i] == '\n'){
+    //             lines++;
+    //         }
+    //         if(buffer[i] == ' ' || buffer[i] == '\n'){
+    //             words++;
+    //         }
+    //         chars++;
+    //     }
+    //     read = sys_read_asm(fd, buffer, 100);
+    // }
+    // printfColor("Lines: %d\n", white, lines);
+    // printfColor("Words: %d\n", white, words);
+    // printfColor("Chars: %d\n", white, chars);
+    // sys_close_asm(fd);
+}
+
+void filter(int argsNum, char ** argsVec){
+    // char * filename = argsVec[0];
+    // int fd = sys_open_asm(filename);
+    // if(fd == -1){
+    //     printfColor("File not found\n", white);
+    //     return;
+    // }
+    // char buffer[100];
+    // int read = sys_read_asm(fd, buffer, 100);
+    // while(read > 0){
+    //     for(int i = 0; i < read; i++){
+    //         if(buffer[i] >= 'a' && buffer[i] <= 'z'){
+    //             buffer[i] = buffer[i] - 'a' + 'A';
+    //         }
+    //     }
+    //     sys_write_asm(STDOUT, buffer, read, white);
+    //     read = sys_read_asm(fd, buffer, 100);
+    // }
+    // sys_close_asm(fd);
+}
+
+void phylo(int argsNum, char ** argsVec){
+    // int n = argsVec[0];
+    // int forks[n];
+    // for(int i = 0; i < n; i++){
+    //     forks[i] = sys_p_create_asm(philosopher, 0, NULL, 1, NULL);
+    // }
+    // for(int i = 0; i < n; i++){
+    //     sys_unblock_asm(forks[i]);
+    // }
+    // while(1){
+    //     sys_unblock_asm(forks[0]);
+    // }
 }

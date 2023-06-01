@@ -4,6 +4,7 @@
 #include <interrupts.h>
 #include <keyboard_driver.h>
 #include <console_driver.h>
+#include <scheduler.h>
 
 static uint8_t scanCodeComplete = true;
 static uint16_t currentScanCode;
