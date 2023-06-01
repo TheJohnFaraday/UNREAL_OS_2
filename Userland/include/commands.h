@@ -15,7 +15,7 @@ typedef char args[MAX_PARAMS][MAX_LENGHT];
 typedef struct
 {
     char * name;
-    void (*function) (args, int);
+    void (*function) (int argsNum, args argsVec);
     int args;
 
 }commands_style;
@@ -23,20 +23,29 @@ typedef struct
 
 //static commands_style commands[COMMAND_NUMBER];
 
-void inforeg(args argsVec, int argsNum);
-void help(args argsVec, int argsNum);
-void div_zero_exception_tester(args argsVec, int argsNum);
-void invalid_opcode_exception_tester(args argsVec, int argsNum);
-void tron_command(args argsVec, int argsNum);
-void time(args argsVec, int argsNum);
-void getContent(args argsVec, int argsNum);
-void clear(args argsVec, int argsNum);
-void biggie(args argsVec, int argsNum);
-void smalls(args argsVec, int argsNum);
-void mem_test(args argsVec, int argsNum);
-void proc_test(args argsVec, int argsNum);
-void dump(args argsVec, int argsNum);
-void ps(args argsVec, int argsNum);
+void inforeg(int argsNum, args argsVec);
+void help(int argsNum, args argsVec);
+void div_zero_exception_tester(int argsNum, args argsVec);
+void invalid_opcode_exception_tester(int argsNum, args argsVec);
+void tron_command(int argsNum, args argsVec);
+void time(int argsNum, args argsVec);
+void getContent(int argsNum, args argsVec);
+void clear(int argsNum, args argsVec);
+void biggie(int argsNum, args argsVec);
+void smalls(int argsNum, args argsVec);
+void mem_test(int argsNum, args argsVec);
+void proc_test(int argsNum, args argsVec);
+void dump(int argsNum, args argsVec);
+void ps(int argsNum, args argsVec);
+void loop(int argsNum, args argsVec);
+void kill_command(int argsNum, args argsVec);
+void nice(int argsNum, args argsVec);
+void block_command(int argsNum, args argsVec);
+void cat(int argsNum, args argsVec);
+void wc(int argsNum, args argsVec);
+void filter(int argsNum, args argsVec);
+void phylo(int argsNum, args argsVec);
+
 
 static commands_style commands[] = {
     {"biggie", biggie, 0},
@@ -54,9 +63,9 @@ static commands_style commands[] = {
     {"dum", dump, 0},
     {"ps", ps, 0},
     {"loop", loop, 1},
-    {"kill", kill, 1},
+    {"kill", kill_command, 1},
     {"nice", nice, 2},
-    {"block", block, 1},
+    {"block", block_command, 1},
     {"cat", cat, 0},
     {"wc", wc, 0},
     {"filter", filter, 0},
