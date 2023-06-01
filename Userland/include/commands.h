@@ -15,7 +15,7 @@ typedef char args[MAX_PARAMS][MAX_LENGHT];
 typedef struct
 {
     char * name;
-    void (*function) (int argsNum, args argsVec);
+    void (*function) (int argsNum, char ** argsVec);
     int args;
 
 }commands_style;
