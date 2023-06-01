@@ -23,28 +23,29 @@ typedef struct
 
 //static commands_style commands[COMMAND_NUMBER];
 
-void inforeg(int argsNum, args argsVec);
-void help(int argsNum, args argsVec);
-void div_zero_exception_tester(int argsNum, args argsVec);
-void invalid_opcode_exception_tester(int argsNum, args argsVec);
-void tron_command(int argsNum, args argsVec);
-void time(int argsNum, args argsVec);
-void getContent(int argsNum, args argsVec);
-void clear(int argsNum, args argsVec);
-void biggie(int argsNum, args argsVec);
-void smalls(int argsNum, args argsVec);
-void mem_test(int argsNum, args argsVec);
-void proc_test(int argsNum, args argsVec);
-void dump(int argsNum, args argsVec);
-void ps(int argsNum, args argsVec);
-void loop(int argsNum, args argsVec);
-void kill_command(int argc, char ** argv);
-void nice(int argsNum, args argsVec);
-void block_command(int argsNum, args argsVec);
-void cat(int argsNum, args argsVec);
-void wc(int argsNum, args argsVec);
-void filter(int argsNum, args argsVec);
-void phylo(int argsNum, args argsVec);
+void inforeg(int argsNum, char** argsVec);
+void help(int argsNum, char** argsVec);
+void div_zero_exception_tester(int argsNum, char** argsVec);
+void invalid_opcode_exception_tester(int argsNum, char** argsVec);
+void tron_command(int argsNum, char** argsVec);
+void time(int argsNum, char** argsVec);
+void getContent(int argsNum, char** argsVec);
+void clear(int argsNum, char** argsVec);
+void biggie(int argsNum, char** argsVec);
+void smalls(int argsNum, char** argsVec);
+void mem_test(int argsNum, char** argsVec);
+void proc_test(int argsNum, char** argsVec);
+void dump(int argsNum, char** argsVec);
+void ps(int argsNum, char** argsVec);
+void loop(int argsNum, char** argsVec);
+void kill_command(int argc, char** argv);
+void nice(int argsNum, char** argsVec);
+void block_command(int argsNum, char** argsVec);
+void cat(int argsNum, char** argsVec);
+void wc(int argsNum, char** argsVec);
+void filter(int argsNum, char** argsVec);
+void phylo(int argsNum, char** argsVec);
+
 
 
 static commands_style commands[] = {

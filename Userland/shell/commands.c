@@ -9,7 +9,7 @@
 #include <procLib.h>
 
 // Prints on screen the help menu
-void help(int argsNum, args argsVec){
+void help(int argsNum, char ** argsVec){
     printfColor("\n", white);
     printfColor("Command List:\n", white);
     printfColor(" *inforeg -> Prints the registers of screenshot taken previously\n",white);
@@ -28,7 +28,7 @@ void help(int argsNum, args argsVec){
 }
 
 // Prints on screen the registers of the screenshot taken previously
-void inforeg(int argsNum, args argsVec){
+void inforeg(int argsNum, char ** argsVec){
     uint64_t registerVector[REGISTERS] = {0};
     // Copy the registers to the vector from the screenshot
     sys_memcpy_asm(registerVector,REGISTERS);
@@ -56,7 +56,7 @@ void inforeg(int argsNum, args argsVec){
 static uint32_t font_size = 16;
 
 // Increases the font size
-void biggie(int argsNum, args argsVec)
+void biggie(int argsNum, char ** argsVec)
 {
 	if(font_size==8)
 		font_size = 16;
@@ -66,7 +66,7 @@ void biggie(int argsNum, args argsVec)
 }
 
 // Decreases the font size
-void smalls(int argsNum, args argsVec)
+void smalls(int argsNum, char ** argsVec)
 {
 	if(font_size==32)
 		font_size = 16;
@@ -76,28 +76,28 @@ void smalls(int argsNum, args argsVec)
 }
 
 // Function to test div zero exception
-void div_zero_exception_tester(int argsNum, args argsVec){
+void div_zero_exception_tester(int argsNum, char ** argsVec){
     int j=1,i=0;
     j=j/i;
 }
 
 // Function to test invalid opcode exception
-void invalid_opcode_exception_tester(int argsNum, args argsVec){
+void invalid_opcode_exception_tester(int argsNum, char ** argsVec){
     invalidOpcodeTester();
 }
 
 // Function to run tron
-void tron_command(int argsNum, args argsVec){
+void tron_command(int argsNum, char ** argsVec){
     tron();
 }
 
 // Clears shell
-void clear(int argsNum, args argsVec){
+void clear(int argsNum, char ** argsVec){
     clearScreen();
 }
 
 // Prints the 32 bytes of memory starting at the address passed as an argument
-void getContent(int argsNum, args argsVec){
+void getContent(int argsNum, char ** argsVec){
     char * address = (char *) argsVec[0];
     uintptr_t realAddress = (uintptr_t)hex2int(address);
     if (realAddress % ALIGNMENT != 0){
@@ -117,7 +117,7 @@ void getContent(int argsNum, args argsVec){
 }
 
 // Prints the current time
-void time(int argsNum, args argsVec){
+void time(int argsNum, char ** argsVec){
     printfColor("\n",white);
     while(1){
         if(sys_accessRTC_asm(GET_STATUS_REG_A) !=0x80){
@@ -137,15 +137,15 @@ int calculateHours(){
 
 }
 
-void mem_test(int argsNum, args argsVec){
+void mem_test(int argsNum, char ** argsVec){
     test_mm();
 }
 
-void proc_test(int argsNum, args argsVec){
+void proc_test(int argsNum, char ** argsVec){
     test_processes();
 }   
 
-void dump(int argsNum, args argsVec){
+void dump(int argsNum, char ** argsVec){
     void * start_address = (void *)0x600000;
     for (int i = 0; i < 1024; i++)
     {
@@ -159,11 +159,11 @@ void dump(int argsNum, args argsVec){
     
 }
 
-void ps(int argsNum, args argsVec){
+void ps(int argsNum, char ** argsVec){
     p_display();
 }
 
-void loop(int argsNum, args argsVec){
+void loop(int argsNum, char ** argsVec){
     // print the ID every second
     int seconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
     while(1) {
@@ -181,15 +181,15 @@ void kill_command(int argc, char ** argv){
     sys_kill_asm(pid);
 }
 
-void nice(int argsNum, args argsVec){
+void nice(int argsNum, char ** argsVec){
     //sys_nice_asm(argsVec[0], argsVec[1]);
 }
 
-void block_command(int argsNum, args argsVec){
+void block_command(int argsNum, char ** argsVec){
     sys_block_asm(*(uint64_t *)argsVec[0]);
 }
 
-void cat(int argsNum, args argsVec){
+void cat(int argsNum, char ** argsVec){
     // char * filename = argsVec[0];
     // int fd = sys_open_asm(filename);
     // if(fd == -1){
@@ -205,7 +205,7 @@ void cat(int argsNum, args argsVec){
     // sys_close_asm(fd);
 }
 
-void wc(int argsNum, args argsVec){
+void wc(int argsNum, char ** argsVec){
     // char * filename = argsVec[0];
     // int fd = sys_open_asm(filename);
     // if(fd == -1){
@@ -235,7 +235,7 @@ void wc(int argsNum, args argsVec){
     // sys_close_asm(fd);
 }
 
-void filter(int argsNum, args argsVec){
+void filter(int argsNum, char ** argsVec){
     // char * filename = argsVec[0];
     // int fd = sys_open_asm(filename);
     // if(fd == -1){
@@ -256,7 +256,7 @@ void filter(int argsNum, args argsVec){
     // sys_close_asm(fd);
 }
 
-void phylo(int argsNum, args argsVec){
+void phylo(int argsNum, char ** argsVec){
     // int n = argsVec[0];
     // int forks[n];
     // for(int i = 0; i < n; i++){
