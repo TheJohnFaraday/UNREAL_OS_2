@@ -38,7 +38,7 @@ void proc_test(int argsNum, args argsVec);
 void dump(int argsNum, args argsVec);
 void ps(int argsNum, args argsVec);
 void loop(int argsNum, args argsVec);
-void kill_command(int argsNum, args argsVec);
+void kill_command(int argc, char ** argv);
 void nice(int argsNum, args argsVec);
 void block_command(int argsNum, args argsVec);
 void cat(int argsNum, args argsVec);

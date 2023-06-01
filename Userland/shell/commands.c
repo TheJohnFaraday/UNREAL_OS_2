@@ -174,8 +174,11 @@ void loop(int argsNum, args argsVec){
     }
 }
 
-void kill_command(int argsNum, args argsVec){
-    sys_kill_asm(*(uint64_t *)argsVec[0]);
+void kill_command(int argc, char ** argv){
+    
+    int pid = atoi(argv[1]);
+    printfColor("\nKilling process %d\n", white, pid);
+    sys_kill_asm(pid);
 }
 
 void nice(int argsNum, args argsVec){
