@@ -106,3 +106,19 @@ uint64_t sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, i
 void sys_processDisplay(){
     return processDisplay();
 }
+
+uint64_t sys_getPID(){
+    return getCurrentPID();
+}
+
+uint64_t sys_block(uint64_t pid){
+    return block(pid);
+}
+
+uint64_t sys_unblock(uint64_t pid){
+    return unblock(pid);
+}
+
+uint64_t sys_kill(uint64_t pid){
+    return kill(pid);
+}

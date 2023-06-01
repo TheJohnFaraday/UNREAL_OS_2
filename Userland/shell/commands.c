@@ -5,6 +5,8 @@
 #include <syscallsAPI.h>
 #include <color.h>
 #include <test_mm.h>
+#include <test_processes.h>
+#include <procLib.h>
 
 // Prints on screen the help menu
 void help(args argsVec, int argsNum){
@@ -22,6 +24,7 @@ void help(args argsVec, int argsNum){
     printfColor(" *ps -> Report a snapshot of the current processes \n",white);
     printfColor(" *help -> Prints this menu\n",white);
     printfColor(" *memTest -> Run the memory manager Test\n",white);
+    printfColor(" *procTest -> Run the round robin scheduler Test\n",white);
 }
 
 // Prints on screen the registers of the screenshot taken previously
@@ -138,6 +141,10 @@ void mem_test(args argsVec, int argsNum){
     test_mm();
 }
 
+void proc_test(args argsVec, int argsNum){
+    test_processes();
+}   
+
 void dump(args argsVec, int argsNum){
     void * start_address = (void *)0x600000;
     for (int i = 0; i < 1024; i++)
@@ -153,5 +160,5 @@ void dump(args argsVec, int argsNum){
 }
 
 void ps(args argsVec, int argsNum){
-    return p_display();
+    p_display();
 }

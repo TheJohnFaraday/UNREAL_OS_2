@@ -32,7 +32,7 @@ void newInputToConsole(const struct pressedKeys * keyboardState)
     }
     // Unblock the process only if the buffer was previously empty
     if (console_read_buffer_size == utf8_size) {
-        unblock(2);
+        unblock(SHELL_PID);
     }
 }
 
@@ -48,7 +48,7 @@ uint64_t read_from_console(void * dest,uint64_t count)
 {
     // Block the process if the buffer is empty
     if (console_read_buffer_size == 0) {
-        block(2);
+        block(getCurrentPID());
     }
 
     count = count>console_read_buffer_size?console_read_buffer_size:count;

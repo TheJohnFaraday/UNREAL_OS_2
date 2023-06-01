@@ -10,6 +10,10 @@ GLOBAL sys_malloc_asm
 GLOBAL sys_free_asm
 GLOBAL sys_p_create_asm
 GLOBAL sys_processDisplay_asm
+GLOBAL sys_getPID_asm
+GLOBAL sys_block_asm
+GLOBAL sys_unblock_asm
+GLOBAL sys_kill_asm
 
 READ equ 0
 WRITE equ 1
@@ -23,6 +27,10 @@ MALLOC equ 8
 FREE equ 9
 P_CREATE equ 10
 P_DISPLAY equ 11
+PID equ 12
+BLOCK equ 13
+UNBLOCK equ 14
+KILL equ 15
 
 SECTION .text
 
@@ -183,3 +191,52 @@ sys_processDisplay_asm:     ;sys_processDisplay_asm();
     mov rsp, rbp
     pop rbp
     ret
+
+sys_getPID_asm:             ;sys_getPID_asm()
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, PID
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_block_asm:              ;sys_block_asm(uint64_t)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, BLOCK
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret    
+
+
+sys_unblock_asm:              ;sys_unblock_asm(uint64_t)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, UNBLOCK
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+
+sys_kill_asm:              ;sys_kill_asm(uint64_t)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, KILL
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret                
