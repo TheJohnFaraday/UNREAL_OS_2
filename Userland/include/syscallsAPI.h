@@ -3,12 +3,12 @@
 
 #include <stdint.h>
 #include <color.h>
-#include <stdioAPI.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #define STDIN  1
 #define STDOUT 1
 #define STDERR 2
-
 
 #define GET_TICKS 0
 #define GET_SECONDS_ELAPSED 1

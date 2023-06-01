@@ -1,6 +1,6 @@
 /* sampleCodeModule.c */
 #include <shell.h>
-#include <stdioAPI.h>
+#include <procLib.h>
 
 int main() {
 	char * argv[] = {"Shell"};

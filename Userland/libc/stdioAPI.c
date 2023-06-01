@@ -232,19 +232,3 @@ void * memset(void * destiation, int32_t c, uint64_t length) {
 
 	return destiation;
 }
-
-void * malloc(size_t size){
-	return sys_malloc_asm(size);
-}
-
-void free(void * ptr){
-	return sys_free_asm(ptr);
-}
-
-uint64_t p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd){
-	return sys_p_create_asm(entryPoint, argc, argv, fg, fd);
-}
-
-void p_display(){
-	return sys_processDisplay_asm();
-}
