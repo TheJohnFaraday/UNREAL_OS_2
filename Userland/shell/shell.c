@@ -96,7 +96,7 @@ void reading_command(char command[MAX_LENGHT], args argsVec, int argsNum){
         for (int i = 0; i < args; i++){
             argv[i+1] = argsVec[i];
         }
-        p_create((void (*)(int, char **))commands[to_execute].function, args, argv, 1, 0);
+        p_create((void (*)(int, char **))commands[to_execute].function, args+1, argv, 1, 0);
     }
     else if (found && !args_check)
     {

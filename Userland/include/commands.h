@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define COMMAND_NUMBER 14
+#define COMMAND_NUMBER 22
 #define MAX_PARAMS 4
 #define MAX_LENGHT 20
 #define ALIGNMENT 16

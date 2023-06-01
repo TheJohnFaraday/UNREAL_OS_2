@@ -44,7 +44,7 @@ int64_t test_processes() {
           case 0:
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
               if (kill(p_rqs[rq].pid) == -1) {
-                printfColor("ERROR killing process\n", white);
+                printfColor("\nERROR killing process\n", white);
                 return -1;
               }
               p_rqs[rq].state = KILLED;
@@ -55,7 +55,7 @@ int64_t test_processes() {
           case 1:
             if (p_rqs[rq].state == RUNNING) {
               if (block(p_rqs[rq].pid) == -1) {
-                printfColor("ERROR blocking process\n", white);
+                printfColor("\nERROR blocking process\n", white);
                 return -1;
               }
               p_rqs[rq].state = BLOCKED;
@@ -68,7 +68,7 @@ int64_t test_processes() {
       for (rq = 0; rq < MAX_PROCESSES; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
           if (unblock(p_rqs[rq].pid) == -1) {
-            printfColor("test_processes: ERROR unblocking process\n", white);
+            printfColor("\ntest_processes: ERROR unblocking process\n", white);
             return -1;
           }
           p_rqs[rq].state = RUNNING;
