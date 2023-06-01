@@ -1,4 +1,7 @@
+#ifndef BUDDY
 #include <MemoryManager.h>
+#include <video.h>
+
 #include <video.h>
 
 typedef struct MemoryManagerCDT {
@@ -139,3 +142,5 @@ void dump(){
     printDec(memory_free);
     printNewline();
 }
+#endif
+

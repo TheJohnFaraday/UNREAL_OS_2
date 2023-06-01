@@ -2,6 +2,7 @@ GCC=gcc
 LD=ld
 AR=ar
 ASM=nasm
+TARGET:=all
 
 GCCFLAGS=-g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99
 ARFLAGS=rvs
@@ -17,11 +18,22 @@ SOURCES_ASM=$(wildcard asm/*.asm)
 OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 LOADERSRC=kernel_entry/loader.asm
-
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
+ifeq ($(TARGET), all)
+    EXCLUDED := BuddyManager.c
+else ifeq ($(TARGET), buddy)
+    EXCLUDED :=
+    GCCFLAGS += -DBUDDY
+else
+    EXCLUDED := MemoryManager.c
+endif
+
+SOURCES:=$(filter-out $(EXCLUDED), $(SOURCES))
+
 all: $(KERNEL)
+buddy: $(KERNEL)
 
 $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) $(FONTS_ELF)
 	$(LD) $(LDFLAGS) -T linker/kernel.ld -o $(KERNEL) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS) $(FONTS_ELF)
