@@ -20,4 +20,6 @@ void *allocMemory(const size_t memoryToAllocate);
 
 void free(void *ptr);
 
+void dump();
+
 #endif

@@ -148,7 +148,6 @@ int newProcess(void (*entryPoint)(int, char **), int argc, char **argv, int fg, 
 static int frame(PNode * newP) {
       newP->rbp = allocMemory(STACK_SIZE);
       if (newP->rbp == NULL){
-            printString("[Kernel] ERROR: Malloc failure.");
             return -1;
       }
 

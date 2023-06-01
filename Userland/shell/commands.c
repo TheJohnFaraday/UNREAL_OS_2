@@ -175,7 +175,7 @@ void loop(int argsNum, args argsVec){
 }
 
 void kill_command(int argsNum, args argsVec){
-    sys_kill_asm(argsVec[0]);
+    sys_kill_asm(*(uint64_t *)argsVec[0]);
 }
 
 void nice(int argsNum, args argsVec){
@@ -183,7 +183,7 @@ void nice(int argsNum, args argsVec){
 }
 
 void block_command(int argsNum, args argsVec){
-    sys_block_asm(argsVec[0]);
+    sys_block_asm(*(uint64_t *)argsVec[0]);
 }
 
 void cat(int argsNum, args argsVec){

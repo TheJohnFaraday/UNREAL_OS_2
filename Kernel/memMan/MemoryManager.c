@@ -1,4 +1,5 @@
 #include <MemoryManager.h>
+#include <video.h>
 
 typedef struct MemoryManagerCDT {
     //Pointer to the possible new memory block
@@ -23,6 +24,7 @@ void createMemoryManager(void *const restrict memoryForMemoryManager, void *cons
 
 void *allocMemory(const size_t memoryToAllocate) {
     if(memoryToAllocate == 0) {
+        printString("\n[Kernel] ERROR: Malloc failure. Size argument is equal 0\n");
         return NULL;    
     }
     // We start running through the memory in search for free "blocks"
@@ -56,6 +58,7 @@ void *allocMemory(const size_t memoryToAllocate) {
     }
 
     if (current_mem_pos >= (uint8_t *)END_MEM) {
+        printString("\n[Kernel] ERROR: Malloc failure. No more memory available\n");
         return NULL;  // No more memory available
     }
 
@@ -108,4 +111,31 @@ void free(void *ptr) {
             node->size += next_node->size + sizeof(Heap_Node);
         }
     }
+}
+
+void dump(){
+    
+    int total = END_MEM - START_MEM_USERS;
+    Heap_Node *iter = (Heap_Node *)START_MEM_USERS;
+    int used_memory = 0;
+
+    while(iter != NULL){
+        used_memory += iter->size;
+        iter = iter->next;
+    }
+
+    int memory_free = total - used_memory;
+
+    printNewline();
+    printString("Memory Status");
+    printNewline();
+    printString("Total Memory: ");
+    printHex(total);
+    printNewline();
+    printString("Memory used: ");
+    printDec(used_memory);
+    printNewline();
+    printString("Memory Free: ");
+    printDec(memory_free);
+    printNewline();
 }

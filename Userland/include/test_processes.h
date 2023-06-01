@@ -1,5 +1,5 @@
-#ifndef _TESTMM_H
-#define _TESTMM_H
+#ifndef _TESTPROCESSES_H
+#define _TESTPROCESSES_H
 #include "test_util.h"
 #include <procLib.h>
 #include <stdioAPI.h>
