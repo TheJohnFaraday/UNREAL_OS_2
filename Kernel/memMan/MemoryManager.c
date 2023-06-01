@@ -1,4 +1,7 @@
+#ifndef BUDDY
 #include <MemoryManager.h>
+
+#include <video.h>
 
 typedef struct MemoryManagerCDT {
     //Pointer to the possible new memory block
@@ -101,3 +104,4 @@ void free(void *ptr) {
         }
     }
 }
+#endif

@@ -1,5 +1,6 @@
-/*#ifdef BUDDY
+#ifdef BUDDY
 #include <MemoryManager.h>
+#include <video.h>
 #define HEADER_SIZE 8
 #define MIN_ALLOC_LOG2 10
 #define MIN_ALLOC ((size_t)MIN_ALLOC_LOG2)
@@ -229,4 +230,4 @@ void free(void *ptr) {
   list_push(&buckets[bucket], (list_t *)ptr_for_node(i, bucket));
 }
 
-#endif*/
+#endif
