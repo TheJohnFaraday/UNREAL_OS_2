@@ -5,6 +5,7 @@
 #include "lib.h"
 
 #define NAME_SIZE 50
+#define SHELL_PID 2
 
 typedef enum{
       READY,

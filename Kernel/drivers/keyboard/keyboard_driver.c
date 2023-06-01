@@ -104,5 +104,4 @@ void fetchKeyboardEvent()
 	}
 
 	updateCurrentPressedKeys(currentScanCode);
-	//unblock(2);
 }

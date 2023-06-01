@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define COMMAND_NUMBER 13
+#define COMMAND_NUMBER 14
 #define MAX_PARAMS 4
 #define MAX_LENGHT 20
 #define ALIGNMENT 16
@@ -34,6 +34,7 @@ void clear(args argsVec, int argsNum);
 void biggie(args argsVec, int argsNum);
 void smalls(args argsVec, int argsNum);
 void mem_test(args argsVec, int argsNum);
+void proc_test(args argsVec, int argsNum);
 void dump(args argsVec, int argsNum);
 void ps(args argsVec, int argsNum);
 
@@ -49,6 +50,7 @@ static commands_style commands[] = {
     {"tron",tron_command, 0},
     {"getContent", getContent, 1},
     {"memTest", mem_test, 0},
+    {"procTest", proc_test, 0},
     {"dum", dump, 0},
     {"ps", ps, 0},
     {"loop", loop, 1},

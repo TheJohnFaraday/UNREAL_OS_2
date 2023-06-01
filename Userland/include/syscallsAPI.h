@@ -31,4 +31,8 @@ extern void * sys_malloc_asm(size_t size);
 extern void sys_free_asm(void * ptr);
 extern uint64_t sys_p_create_asm(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd);
 extern void sys_processDisplay_asm();
+extern uint64_t sys_getPID_asm();
+extern uint64_t sys_block_asm(uint64_t pid);
+extern uint64_t sys_unblock_asm(uint64_t pid);
+extern uint64_t sys_kill_asm(uint64_t pid);
 #endif
