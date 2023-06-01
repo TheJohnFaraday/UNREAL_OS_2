@@ -28,5 +28,11 @@ uint64_t sys_memcpy(uint64_t * dest, int length);
 uint64_t sys_accessRTC(int fd);
 uint64_t sys_allocMem(size_t size);
 void sys_free(void * ptr);
+uint64_t sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd);
+void sys_processDisplay();
+uint64_t sys_getPID();
+uint64_t sys_block(uint64_t pid);
+uint64_t sys_unblock(uint64_t pid);
+uint64_t sys_kill(uint64_t pid);
 
 #endif

@@ -3,18 +3,18 @@ static struct language_mapping ar_mapping =
 		.main_map = {
 			"\x1b"/*escape*/,
 			"1","2","3","4","5","6","7","8","9","0",
-			UNDEF,UNDEF,
+			"-","=",
 			"\x7f"/*backspace*/,
 			"\x09"/*tab*/,
 			"q","w","e","r","t","y","u","i","o","p",
-			UNDEF,UNDEF,
+			"[","]",
 			"\x0d"/*enter*/,
 			STATE_CHANGE_KEY,/*crtl*/
 			"a","s","d","f","g","h","j","k","l",
-			UNDEF,UNDEF,UNDEF,
+			";","'","\\",
 			STATE_CHANGE_KEY,/*shift left*/
 			UNDEF,
-			"z","x","c","v","b","n","m",",",".","-",
+			"z","x","c","v","b","n","m",",",".","/",
 			STATE_CHANGE_KEY,/*shift right*/
 			UNDEF,
 			STATE_CHANGE_KEY,/*alt*/
@@ -26,19 +26,19 @@ static struct language_mapping ar_mapping =
 	
 		.shift_map = {
 			"\x1b"/*escape*/,
-			"1","2","3","4","5","6","7","8","9","0",
-			UNDEF,UNDEF,
+			"!","@","#","$","%","^","&","*","(",")",
+			"_","+",
 			"\x7f"/*backspace*/,
 			"\x09"/*tab*/,
 			"Q","W","E","R","T","Y","U","I","O","P",
-			UNDEF,UNDEF,
+			"{","}",
 			"\x0d"/*enter*/,
 			STATE_CHANGE_KEY,/*crtl*/
 			"A","S","D","F","G","H","J","K","L",
-			UNDEF,UNDEF,UNDEF,
+			":","\"","|",
 			STATE_CHANGE_KEY,/*shift left*/
 			UNDEF,
-			"Z","X","C","V","B","N","M",";",":","_",
+			"Z","X","C","V","B","N","M","<",">","?",
 			STATE_CHANGE_KEY,/*shift right*/
 			UNDEF,
 			STATE_CHANGE_KEY,/*alt*/

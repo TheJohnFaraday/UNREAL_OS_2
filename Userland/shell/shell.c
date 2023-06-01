@@ -5,6 +5,7 @@
 #include <syscallsAPI.h>
 #include <tron.h>
 #include <color.h>
+#include <procLib.h>
 
 
 void shell(){
@@ -89,7 +90,13 @@ void reading_command(char command[MAX_LENGHT], args argsVec, int argsNum){
     }
 
     if(found && args_check){
-        commands[to_execute].function(argsVec, args);
+        char * argv[args + 1];
+        char * command_name = commands[to_execute].name;
+        argv[0] = command_name;
+        for (int i = 0; i < args; i++){
+            argv[i+1] = argsVec[i];
+        }
+        p_create((void (*)(int, char **))commands[to_execute].function, args+1, argv, 1, 0);
     }
     else if (found && !args_check)
     {

@@ -1,5 +1,6 @@
 #ifndef BUDDY
 #include <MemoryManager.h>
+#include <video.h>
 
 #include <video.h>
 
@@ -16,19 +17,24 @@ typedef struct Heap_Node{
 } Heap_Node;
 
 static MemoryManagerADT memoryManager;
-static int first_time = 0;
+static int first_time;
 
 void createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
     memoryManager = (MemoryManagerADT)memoryForMemoryManager;
     memoryManager->nextAddress = managedMemory;
+    first_time = 0;
 }
 
 void *allocMemory(const size_t memoryToAllocate) {
+    if(memoryToAllocate == 0) {
+        printString("\n[Kernel] ERROR: Malloc failure. Size argument is equal 0\n");
+        return NULL;    
+    }
     // We start running through the memory in search for free "blocks"
     uint8_t *current_mem_pos = (void *)START_MEM_USERS;
 
     Heap_Node *current_node = NULL;
-    while (current_mem_pos < memoryManager->nextAddress) {
+    while (current_mem_pos < memoryManager->nextAddress && current_mem_pos < (uint8_t *)END_MEM) {
         current_node = (Heap_Node *)current_mem_pos;
 
         if (current_node->size >= memoryToAllocate && current_node->status == FREE) {
@@ -52,6 +58,11 @@ void *allocMemory(const size_t memoryToAllocate) {
         }
 
         current_mem_pos += sizeof(Heap_Node) + current_node->size;
+    }
+
+    if (current_mem_pos >= (uint8_t *)END_MEM) {
+        printString("\n[Kernel] ERROR: Malloc failure. No more memory available\n");
+        return NULL;  // No more memory available
     }
 
     // Saving the size and status of the new block at the end of the list
@@ -104,4 +115,32 @@ void free(void *ptr) {
         }
     }
 }
+
+void dump(){
+    
+    int total = END_MEM - START_MEM_USERS;
+    Heap_Node *iter = (Heap_Node *)START_MEM_USERS;
+    int used_memory = 0;
+
+    while(iter != NULL){
+        used_memory += iter->size;
+        iter = iter->next;
+    }
+
+    int memory_free = total - used_memory;
+
+    printNewline();
+    printString("Memory Status");
+    printNewline();
+    printString("Total Memory: ");
+    printHex(total);
+    printNewline();
+    printString("Memory used: ");
+    printDec(used_memory);
+    printNewline();
+    printString("Memory Free: ");
+    printDec(memory_free);
+    printNewline();
+}
 #endif
+

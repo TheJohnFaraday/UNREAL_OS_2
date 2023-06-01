@@ -3,6 +3,7 @@ GLOBAL getStatusRegA
 GLOBAL getSeconds
 GLOBAL getMinutes
 GLOBAL getHours
+GLOBAL timerInterrupt
 
 section .text
 	
@@ -77,4 +78,8 @@ getHours: ;Obtains the hours from the RTC
 
 	mov rsp, rbp
 	pop rbp
+	ret
+
+timerInterrupt:
+	int 20h
 	ret

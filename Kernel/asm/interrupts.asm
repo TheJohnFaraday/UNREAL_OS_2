@@ -22,6 +22,7 @@ EXTERN timer_handler
 EXTERN exceptionDispatcher
 EXTERN fetchKeyboardEvent
 EXTERN syscallHandler
+EXTERN scheduler
 
 EXTERN sys_accessRTC
 EXTERN sys_read
@@ -33,6 +34,12 @@ EXTERN sys_print
 EXTERN sys_ticker 
 EXTERN sys_allocMem
 EXTERN sys_free
+EXTERN sys_p_create
+EXTERN sys_processDisplay
+EXTERN sys_getPID
+EXTERN sys_block
+EXTERN sys_unblock
+EXTERN sys_kill
 
 READ equ 0
 WRITE equ 1
@@ -44,6 +51,12 @@ MEMCPY equ 6
 RTC equ 7
 MALLOC equ 8
 FREE equ 9
+P_CREATE equ 10
+P_DISPLAY equ 11
+PID equ 12
+BLOCK equ 13
+UNBLOCK equ 14
+KILL equ 15
 
 
 SECTION .text
@@ -83,6 +96,46 @@ picSlaveMask:
 	pushStateSys
 	mov [stackAddrAfterPushState], rsp 
 %endmacro 	
+
+%macro timerPush 0
+	push rax      
+    push rbx      
+    push rcx      
+    push rdx      
+    push rbp      
+    push rdi      
+    push rsi      
+    push r8       
+    push r9       
+    push r10      
+    push r12     
+    push r11     
+    push r13     
+    push r14     
+    push r15     
+    push fs
+    push gs
+%endmacro
+
+%macro timerPop 0
+	pop gs
+    pop fs
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r9
+    pop r8
+    pop rsi
+    pop rdi
+    pop rbp
+    pop rdx
+    pop rcx
+    pop rbx
+    pop rax
+%endmacro
 
 %macro pushStateSys 0
 	push rbx
@@ -163,14 +216,18 @@ picSlaveMask:
 %endmacro
 
 timerRoutine: ;Timer tick handler
-    pushState
+    timerPush
 
 	call timer_handler
+
+	mov rdi,rsp
+	call scheduler
+	mov rsp, rax
 
 	; signal pic EOI (End of Interrupt)
 	endInterrupt
 
-	popState
+	timerPop
 	iretq
 
 keyboardRoutine: ;Keyboard Interrupt handler
@@ -197,6 +254,7 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	mov r8, r9
  
 	;calling the syscall
+	;Basic Syscalls
 	cmp rbx, WRITE
 	je .write_handler
 	cmp rbx, READ
@@ -213,10 +271,26 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .memcpy_handler
 	cmp rbx, RTC
 	je .rtc_handler
+
+	;Memory Syscalls
 	cmp rbx, MALLOC
 	je .malloc_handler
 	cmp rbx, FREE
 	je .free_handler
+
+	;Process Syscalls
+	cmp rbx, P_CREATE
+	je .process_create_handler
+	cmp rbx, P_DISPLAY
+	je .process_display_handler
+	cmp rbx, PID
+	je .getPID_handler
+	cmp rbx, BLOCK
+	je .block_handler
+	cmp rbx, UNBLOCK
+	je .unblock_handler
+	cmp rbx, KILL
+	je .kill_handler
 
 .end_sys:
 	mov rsp,rbp
@@ -262,6 +336,30 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 .free_handler:
 	call sys_free
 	jmp .end_sys
+
+.process_create_handler:
+	call sys_p_create
+	jmp .end_sys	
+
+.process_display_handler:
+	call sys_processDisplay
+	jmp .end_sys
+
+.getPID_handler:
+	call sys_getPID
+	jmp .end_sys	
+
+.block_handler:
+	call sys_block
+	jmp .end_sys
+
+.unblock_handler:
+	call sys_unblock
+	jmp .end_sys
+
+.kill_handler:
+	call sys_kill
+	jmp .end_sys		
 
 _exception0Handler:
 	exceptionHandler 0

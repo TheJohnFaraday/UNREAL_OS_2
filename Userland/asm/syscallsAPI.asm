@@ -8,6 +8,12 @@ GLOBAL sys_out_asm
 GLOBAL sys_accessRTC_asm
 GLOBAL sys_malloc_asm
 GLOBAL sys_free_asm
+GLOBAL sys_p_create_asm
+GLOBAL sys_processDisplay_asm
+GLOBAL sys_getPID_asm
+GLOBAL sys_block_asm
+GLOBAL sys_unblock_asm
+GLOBAL sys_kill_asm
 
 READ equ 0
 WRITE equ 1
@@ -19,6 +25,12 @@ TICKER equ 5
 RTC equ 7
 MALLOC equ 8
 FREE equ 9
+P_CREATE equ 10
+P_DISPLAY equ 11
+PID equ 12
+BLOCK equ 13
+UNBLOCK equ 14
+KILL equ 15
 
 SECTION .text
 
@@ -152,3 +164,79 @@ sys_free_asm:           ; sys_free_asm(void * ptr)
     mov rsp,rbp
     pop rbp
     ret    
+
+sys_p_create_asm:       ; sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd);
+    push rbp
+    mov rbp, rsp
+
+    mov r9,r8
+    mov r8,rcx 
+    mov rcx,rdx
+    mov rdx,rsi
+    mov rsi, rdi ;Passing arguments from C to syscall parameters
+    mov rdi, P_CREATE
+    int 80h
+
+    mov rsp,rbp
+    pop rbp
+    ret    
+
+sys_processDisplay_asm:     ;sys_processDisplay_asm();
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, P_DISPLAY
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_getPID_asm:             ;sys_getPID_asm()
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, PID
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_block_asm:              ;sys_block_asm(uint64_t)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, BLOCK
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret    
+
+
+sys_unblock_asm:              ;sys_unblock_asm(uint64_t)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, UNBLOCK
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+
+sys_kill_asm:              ;sys_kill_asm(uint64_t)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, KILL
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret                

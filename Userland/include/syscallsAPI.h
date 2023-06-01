@@ -3,12 +3,12 @@
 
 #include <stdint.h>
 #include <color.h>
-#include <stdioAPI.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #define STDIN  1
 #define STDOUT 1
 #define STDERR 2
-
 
 #define GET_TICKS 0
 #define GET_SECONDS_ELAPSED 1
@@ -29,4 +29,10 @@ extern void sys_out_asm(uint16_t port, uint8_t data);
 extern int sys_accessRTC_asm(int fd);
 extern void * sys_malloc_asm(size_t size);
 extern void sys_free_asm(void * ptr);
+extern uint64_t sys_p_create_asm(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd);
+extern void sys_processDisplay_asm();
+extern uint64_t sys_getPID_asm();
+extern uint64_t sys_block_asm(uint64_t pid);
+extern uint64_t sys_unblock_asm(uint64_t pid);
+extern uint64_t sys_kill_asm(uint64_t pid);
 #endif
