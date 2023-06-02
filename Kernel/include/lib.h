@@ -13,6 +13,8 @@ void strcpy(char * dest, char * src);
 void timerInterrupt();
 void reverse(char* str, int length);
 char * itoa(int num, char * str, int base);
+void enter_region(int * lock);
+void exit_region(int * lock);
 
 
 char *cpuVendor(char *result);

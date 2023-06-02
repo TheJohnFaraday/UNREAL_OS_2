@@ -83,3 +83,4 @@ getHours: ;Obtains the hours from the RTC
 timerInterrupt:
 	int 20h
 	ret
+

@@ -145,3 +145,13 @@ char* itoa(int num, char* str, int base) {
 
     return str;
 }
+
+void enter_region(int * lock){
+    while(__xchg__(lock, 1) != 0){
+        // spin
+    }
+}
+
+void exit_region(int * lock){
+    __xchg__(lock, 0);
+}
