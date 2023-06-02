@@ -2,6 +2,8 @@
 #include <stddef.h>
 #include <video.h>
 
+sem_t * getSem(uint32_t id);
+
 void sem_create(uint32_t id, char *name, uint32_t value) {
     sem_t * sem = getSem(id);
     if (sem != NULL) {

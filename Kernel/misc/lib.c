@@ -147,11 +147,25 @@ char* itoa(int num, char* str, int base) {
 }
 
 void enter_region(int * lock){
-    while(__xchg__(lock, 1) != 0){
-        // spin
-    }
+    int newval = 1;
+    int result;
+
+    do {
+        __asm__ __volatile__("xchg %0, %1"
+                             : "+r"(newval), "+m"(*lock)
+                             : 
+                             : "memory");
+        result = newval;
+    } while(result != 0);
+    // while(__asm__("__xchg__(lock, 1)") == 1){
+    //     // spin
+    // }
 }
 
-void exit_region(int * lock){
-    __xchg__(lock, 0);
+void leave_region(int * lock){
+    int newval = 0;
+    __asm__ __volatile__("xchg %0, %1"
+                         : "+r"(newval), "+m"(*lock)
+                         : 
+                         : "memory");
 }
