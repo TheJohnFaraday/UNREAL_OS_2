@@ -11,6 +11,7 @@ static char console_read_buffer[READ_BUFFER_SIZE_MAX];
 static char * buffer_read_start = console_read_buffer;
 static char * buffer_read_end = console_read_buffer;
 static uint8_t console_read_buffer_size = 0;
+static int reading = 0;
 
 //receives a keyboard state struct and adds the corresponding utf8 encoded string to the console read buffer
 //Arguments : current keyboard state updated by the keryboard driver
@@ -31,7 +32,8 @@ void newInputToConsole(const struct pressedKeys * keyboardState)
         console_read_buffer_size+=utf8_size;
     }
     // Unblock the process only if the buffer was previously empty
-    if (console_read_buffer_size == utf8_size) {
+    if (console_read_buffer_size == utf8_size && reading) {
+        reading = 0;
         unblock(SHELL_PID);
     }
 }
@@ -48,6 +50,7 @@ uint64_t read_from_console(void * dest,uint64_t count)
 {
     // Block the process if the buffer is empty
     if (console_read_buffer_size == 0) {
+        reading = 1;
         block(getCurrentPID());
     }
 

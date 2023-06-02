@@ -12,19 +12,20 @@
 void help(int argsNum, char ** argsVec){
     printfColor("\n", white);
     printfColor("Command List:\n", white);
-    printfColor(" *inforeg -> Prints the registers of screenshot taken previously\n",white);
-    printfColor(" *divzero -> Tests div zero exception\n",white);
-    printfColor(" *invopcode -> Tests invalid opcode exception\n",white);
-    printfColor(" *time -> Prints the current time\n",white);
+    //printfColor(" *inforeg -> Prints the registers of screenshot taken previously\n",white);
+    //printfColor(" *divzero -> Tests div zero exception\n",white);
+    //printfColor(" *invopcode -> Tests invalid opcode exception\n",white);
+    //printfColor(" *time -> Prints the current time\n",white);
     printfColor(" *clear -> Clears the screen\n",white);
-    printfColor(" *tron -> Lets you play tron\n",white);
+    //printfColor(" *tron -> Lets you play tron\n",white);
     printfColor(" *biggie -> Lets you zoom in\n",white);
     printfColor(" *smalls -> Lets you zoom out\n",white);
-    printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
+    //printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
     printfColor(" *ps -> Report a snapshot of the current processes \n",white);
     printfColor(" *help -> Prints this menu\n",white);
     printfColor(" *memTest -> Run the memory manager Test\n",white);
     printfColor(" *procTest -> Run the round robin scheduler Test\n",white);
+    printfColor(" *mem -> Report a snapshot of the current state of the memory\n",white);
 }
 
 // Prints on screen the registers of the screenshot taken previously
@@ -146,16 +147,7 @@ void proc_test(int argsNum, char ** argsVec){
 }   
 
 void dump(int argsNum, char ** argsVec){
-    void * start_address = (void *)0x600000;
-    for (int i = 0; i < 1024; i++)
-    {
-        printfColor("%x",white,*((uint8_t *)start_address));
-        if(i % 100 == 0){
-            printfColor("\n",white);
-        }
-
-         start_address += sizeof(uint8_t);
-    }
+    mem_dump();
     
 }
 

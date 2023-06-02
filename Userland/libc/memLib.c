@@ -9,3 +9,6 @@ void free(void * ptr){
 	return sys_free_asm(ptr);
 }
 
+void mem_dump(){
+	return sys_m_dump_asm();
+}
