@@ -8,6 +8,7 @@ GLOBAL sys_out_asm
 GLOBAL sys_accessRTC_asm
 GLOBAL sys_malloc_asm
 GLOBAL sys_free_asm
+GLOBAL sys_m_dump_asm
 GLOBAL sys_p_create_asm
 GLOBAL sys_processDisplay_asm
 GLOBAL sys_getPID_asm
@@ -20,17 +21,18 @@ WRITE equ 1
 BEEP_INB equ 2
 BEEP_OUTB equ 3
 PRINT equ 4
-MEMCPY equ 6
 TICKER equ 5
+MEMCPY equ 6
 RTC equ 7
 MALLOC equ 8
 FREE equ 9
-P_CREATE equ 10
-P_DISPLAY equ 11
-PID equ 12
-BLOCK equ 13
-UNBLOCK equ 14
-KILL equ 15
+M_DUMP equ 10
+P_CREATE equ 11
+P_DISPLAY equ 12
+PID equ 13
+BLOCK equ 14
+UNBLOCK equ 15
+KILL equ 16
 
 SECTION .text
 
@@ -163,7 +165,18 @@ sys_free_asm:           ; sys_free_asm(void * ptr)
 
     mov rsp,rbp
     pop rbp
-    ret    
+    ret
+
+sys_m_dump_asm:     ;sys_m_dump_asm();
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, M_DUMP
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret        
 
 sys_p_create_asm:       ; sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd);
     push rbp

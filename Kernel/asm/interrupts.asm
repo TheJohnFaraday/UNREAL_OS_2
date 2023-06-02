@@ -34,6 +34,7 @@ EXTERN sys_print
 EXTERN sys_ticker 
 EXTERN sys_allocMem
 EXTERN sys_free
+EXTERN sys_m_dump
 EXTERN sys_p_create
 EXTERN sys_processDisplay
 EXTERN sys_getPID
@@ -51,12 +52,13 @@ MEMCPY equ 6
 RTC equ 7
 MALLOC equ 8
 FREE equ 9
-P_CREATE equ 10
-P_DISPLAY equ 11
-PID equ 12
-BLOCK equ 13
-UNBLOCK equ 14
-KILL equ 15
+M_DUMP equ 10
+P_CREATE equ 11
+P_DISPLAY equ 12
+PID equ 13
+BLOCK equ 14
+UNBLOCK equ 15
+KILL equ 16
 
 
 SECTION .text
@@ -277,6 +279,8 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .malloc_handler
 	cmp rbx, FREE
 	je .free_handler
+	cmp rbx, M_DUMP
+	je .m_dump_handler
 
 	;Process Syscalls
 	cmp rbx, P_CREATE
@@ -335,6 +339,10 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 
 .free_handler:
 	call sys_free
+	jmp .end_sys
+
+.m_dump_handler:
+	call sys_m_dump
 	jmp .end_sys
 
 .process_create_handler:

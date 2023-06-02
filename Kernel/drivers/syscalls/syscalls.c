@@ -99,6 +99,10 @@ void sys_free(void * ptr){
     return free(ptr);
 }
 
+void sys_m_dump(){
+    return dump();
+}
+
 uint64_t sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd){
     return newProcess(entryPoint, argc, argv, fg, fd);
 }

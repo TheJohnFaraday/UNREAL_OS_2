@@ -61,7 +61,7 @@ static commands_style commands[] = {
     {"getContent", getContent, 1},
     {"memTest", mem_test, 0},
     {"procTest", proc_test, 0},
-    {"dum", dump, 0},
+    {"mem", dump, 0},
     {"ps", ps, 0},
     {"loop", loop, 1},
     {"kill", kill_command, 1},
