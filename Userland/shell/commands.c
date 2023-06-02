@@ -156,14 +156,17 @@ void ps(int argsNum, char ** argsVec){
 }
 
 void loop(int argsNum, char ** argsVec){
-    // print the ID every second
-    int seconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
-    while(1) {
-        if (sys_ticker_asm(GET_SECONDS_ELAPSED, 0) >= seconds + argsVec[0]) {
-            printfColor("PID: %d\n", white, sys_getPID_asm());
-            seconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
+    // print the ID every argsVec[1] seconds
+    int seconds = atoi(argsVec[1]);
+    int time = sys_ticker_asm(GET_SECONDS_ELAPSED,0);
+    while (1)
+    {
+        if(sys_ticker_asm(GET_SECONDS_ELAPSED,0) - time >= seconds){
+            printfColor("ID: %d\n",white,sys_getPID_asm());
+            time = sys_ticker_asm(GET_SECONDS_ELAPSED,0);
         }
     }
+    
 }
 
 void kill_command(int argc, char ** argv){

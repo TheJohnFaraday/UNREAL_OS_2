@@ -12,6 +12,8 @@
 *.o
 
 .gdbinit 
+Kernel/.gdbinit
+Userland/.gdbinit
 
 docker_build_command.sh
 .vscode/settings.json
