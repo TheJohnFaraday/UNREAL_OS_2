@@ -35,5 +35,6 @@ uint64_t sys_getPID();
 uint64_t sys_block(uint64_t pid);
 uint64_t sys_unblock(uint64_t pid);
 uint64_t sys_kill(uint64_t pid);
+void sys_priority(uint64_t pid, int priority);
 
 #endif

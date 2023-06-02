@@ -41,6 +41,7 @@ EXTERN sys_getPID
 EXTERN sys_block
 EXTERN sys_unblock
 EXTERN sys_kill
+EXTERN sys_priority
 
 READ equ 0
 WRITE equ 1
@@ -59,6 +60,7 @@ PID equ 13
 BLOCK equ 14
 UNBLOCK equ 15
 KILL equ 16
+PRIORITY equ 17
 
 
 SECTION .text
@@ -295,6 +297,8 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .unblock_handler
 	cmp rbx, KILL
 	je .kill_handler
+	cmp rbx, PRIORITY
+	je .priority_handler
 
 .end_sys:
 	mov rsp,rbp
@@ -368,6 +372,10 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 .kill_handler:
 	call sys_kill
 	jmp .end_sys		
+
+.priority_handler:
+	call sys_priority
+	jmp .end_sys	
 
 _exception0Handler:
 	exceptionHandler 0

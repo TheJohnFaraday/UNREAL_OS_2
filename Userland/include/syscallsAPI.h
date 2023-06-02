@@ -36,4 +36,5 @@ extern uint64_t sys_getPID_asm();
 extern uint64_t sys_block_asm(uint64_t pid);
 extern uint64_t sys_unblock_asm(uint64_t pid);
 extern uint64_t sys_kill_asm(uint64_t pid);
+extern void sys_priority_asm(uint64_t pid, int priority);
 #endif

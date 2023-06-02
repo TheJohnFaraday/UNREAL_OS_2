@@ -15,6 +15,7 @@ GLOBAL sys_getPID_asm
 GLOBAL sys_block_asm
 GLOBAL sys_unblock_asm
 GLOBAL sys_kill_asm
+GLOBAL sys_priority_asm
 
 READ equ 0
 WRITE equ 1
@@ -33,6 +34,7 @@ PID equ 13
 BLOCK equ 14
 UNBLOCK equ 15
 KILL equ 16
+PRIORITY equ 17
 
 SECTION .text
 
@@ -253,3 +255,15 @@ sys_kill_asm:              ;sys_kill_asm(uint64_t)
     mov rsp, rbp
     pop rbp
     ret                
+
+sys_priority_asm:          ;sys_priority_asm(uint64_t pid, int priority)
+    push rbp
+    mov rbp, rsp
+
+    mov rdx, rsi ;Passing arguments from C to syscall parameters
+    mov rsi, rdi
+    mov rdi, PRIORITY
+
+    mov rsp, rbp
+    pop rbp
+    ret
