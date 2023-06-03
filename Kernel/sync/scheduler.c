@@ -359,6 +359,20 @@ uint64_t unblock(uint64_t pid){
       return changeState(pid, READY);
 }
 
+void toggle(uint64_t pid){
+      PNode * process = getProcess(pid);
+      if (process == NULL){
+            printString("[Kernel] ERROR: Process PID is not valid.");
+            return;
+      }
+      if (process->state == READY){
+            block(pid);
+      }
+      else{
+            unblock(pid);
+      }
+}
+
 //    ----------------------------
 //    |                          |
 //    |      Misc functions      |

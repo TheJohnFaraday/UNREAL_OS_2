@@ -19,6 +19,7 @@ GLOBAL sys_sem_asm
 GLOBAL sys_yield_asm
 GLOBAL sys_waitpid_asm
 GLOBAL sys_priority_asm
+GLOBAL sys_toggle_asm
 
 READ equ 0
 WRITE equ 1
@@ -41,6 +42,7 @@ SEM equ 17
 YIELD equ 18
 WAITPID equ 19
 PRIORITY equ 20
+TOGGLE equ 21
 
 SECTION .text
 
@@ -306,6 +308,18 @@ sys_priority_asm:          ;sys_priority_asm(uint64_t pid, int priority)
     mov rdx, rsi ;Passing arguments from C to syscall parameters
     mov rsi, rdi
     mov rdi, PRIORITY
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_toggle_asm:          ;sys_toggle_asm(uint64_t pid)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, TOGGLE
+    int 80h
 
     mov rsp, rbp
     pop rbp

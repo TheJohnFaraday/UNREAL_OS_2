@@ -55,6 +55,7 @@ void waitForPID(uint64_t pid);
 int getCurrentOutFD();
 int getCurrentInFD();
 void waitpid(uint64_t pid);
+void toggle(uint64_t pid);
 
 #endif
 

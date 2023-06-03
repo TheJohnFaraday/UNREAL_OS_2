@@ -240,3 +240,12 @@ int atoi(char * str){
 	}
 	return res;
 }
+
+void sleep(int seconds){
+	uint64_t initialSeconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
+	while(1){
+		if(sys_ticker_asm(GET_SECONDS_ELAPSED, 0) - initialSeconds >= seconds){
+			return;
+		}
+	}
+}

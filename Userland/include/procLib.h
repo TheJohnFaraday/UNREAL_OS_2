@@ -13,6 +13,7 @@ uint64_t kill(uint64_t pid);
 void yield();
 void waitpid(uint64_t pid);
 void changePriority(uint64_t pid, int priority);
+void toggle(uint64_t pid);
 
 #endif
 

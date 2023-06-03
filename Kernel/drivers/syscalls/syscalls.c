@@ -153,3 +153,7 @@ void sys_waitpid(uint64_t pid){
 void sys_priority(uint64_t pid, int priority){
     return changePriority(pid, priority);
 }
+
+void sys_toggle(uint64_t pid){
+    return toggle(pid);
+}
