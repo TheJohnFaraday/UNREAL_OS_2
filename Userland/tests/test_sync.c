@@ -39,7 +39,6 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
     if (use_sem)
       sem_wait(SEM_ID);
     slowInc(&global, inc);
-    printfColor("%s: %d\n", white, name, global);
     if (use_sem)
       sem_post(SEM_ID);
   }
