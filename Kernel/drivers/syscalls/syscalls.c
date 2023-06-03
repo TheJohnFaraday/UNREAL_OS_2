@@ -9,6 +9,7 @@
 #include <registorsSnapshot.h>
 #include <MemoryManager.h>
 #include <scheduler.h>
+#include <sem.h>
 
 
 extern uint64_t registerBuffer;
@@ -125,4 +126,27 @@ uint64_t sys_unblock(uint64_t pid){
 
 uint64_t sys_kill(uint64_t pid){
     return kill(pid);
+}
+
+uint64_t sys_sem(int fd, uint32_t id, char * name, uint32_t value) {
+    switch(fd) {
+        case SEM_OPEN:
+            return sem_open(id, name, value);
+        case SEM_WAIT:
+            return sem_wait(id);
+        case SEM_POST:
+            return sem_post(id);
+        case SEM_CLOSE:
+            return sem_close(id);
+        default:
+            return -1;  
+    }
+}
+
+void sys_yield(){
+    yield();
+}
+
+void sys_waitpid(uint64_t pid){
+    waitpid(pid);
 }

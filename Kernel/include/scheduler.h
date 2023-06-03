@@ -54,6 +54,7 @@ int currentWritesTo();
 void waitForPID(uint64_t pid);
 int getCurrentOutFD();
 int getCurrentInFD();
+void waitpid(uint64_t pid);
 
 #endif
 

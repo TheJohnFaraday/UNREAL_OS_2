@@ -6,6 +6,7 @@
 #include <color.h>
 #include <test_mm.h>
 #include <test_processes.h>
+#include <test_sync.h>
 #include <procLib.h>
 
 // Prints on screen the help menu
@@ -149,6 +150,10 @@ void proc_test(int argsNum, char ** argsVec){
 void dump(int argsNum, char ** argsVec){
     mem_dump();
     
+}
+
+void sem_test(int argsNum, char ** argsVec){
+    uint64_t result = test_sync(); 
 }
 
 void ps(int argsNum, char ** argsVec){

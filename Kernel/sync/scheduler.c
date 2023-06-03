@@ -370,6 +370,21 @@ static uint64_t getPID(){
       return PID++;
 }
 
+void waitpid(uint64_t pid){
+      //block a process until the process with pid is killed
+      if (pid <= 2){
+            printString("[Kernel] ERROR: Invalid PID.");
+            return;
+      }
+      PNode * process = getProcess(pid);
+      if (process == NULL){
+            return;
+      }
+      while(process->state != KILLED){
+            yield();
+      }
+}
+
 static void createStackFrame(void (*entryPoint)(int, char **), int argc, char **argv, void *rbp){
       StackFrame *frame = (StackFrame *)rbp - 1;
       frame->gs = 0x001;

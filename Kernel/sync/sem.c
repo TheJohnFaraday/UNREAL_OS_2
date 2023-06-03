@@ -4,14 +4,11 @@
 
 sem_t * getSem(uint32_t id);
 
-void sem_create(uint32_t id, char *name, uint32_t value) {
-    sem_t * sem = getSem(id);
-    if (sem != NULL) {
-        printString("ERROR: Semaphore already exists.");
-        printNewline();
-        return;
-    }
+sem_t sems[MAX_SEMS];
 
+
+void sem_create(uint32_t id, char *name, uint32_t value) {
+    sem_t * sem = NULL;
     for (int i = 0; i < MAX_SEMS; i++) {
         if (sems[i].id == 0) {
             sem = &sems[i];
@@ -26,7 +23,7 @@ void sem_create(uint32_t id, char *name, uint32_t value) {
     }
 
     sem->id = id;
-    sem->value = value;
+    sem->value = 1; //Mirar esto porq no deberia estar hardcodeado
     sem->linkedProcesses = 0;
     sem->blockedPIDsCount = 0;
     sem->mutex = 0;
@@ -50,8 +47,8 @@ int sem_wait(uint32_t id) {
         sem->blockedPIDs[sem->blockedPIDsCount++] = pid;
         leave_region(&(sem->mutex));
         block(pid);
-        return 0;
     }
+    return 0;
 }
 
 int sem_post(uint32_t id) {
@@ -72,9 +69,9 @@ int sem_post(uint32_t id) {
     }
     else{
         sem->value++;
-        leave_region(&(sem->mutex));
-        return 0;
     }
+    leave_region(&(sem->mutex));
+    return 0;
 }
 
 int sem_open(uint32_t id, char *name, uint32_t value) {
@@ -83,6 +80,8 @@ int sem_open(uint32_t id, char *name, uint32_t value) {
     if (sem == NULL){
         sem_create(id, name, value);
     }
+
+    sem = getSem(id);
 
     if (sem->linkedProcesses >= MAX_BLOCKED_PIDS) {
         printString("ERROR: Max number of processes linked to this semaphore reached.");
@@ -94,32 +93,42 @@ int sem_open(uint32_t id, char *name, uint32_t value) {
     return id;
 }
 
-int sem_close(int sem) {
-    sem_t * semPtr = getSem(sem);
-    if (semPtr == NULL) {
+int sem_close(uint32_t id) {
+    //unlinks the semaphore from the process
+
+    sem_t * sem = getSem(id);
+    if (sem == NULL) {
         return -1;
     }
-    semPtr->linkedProcesses--;
-    if (semPtr->linkedProcesses > 0) {
-        return 0;
-    }
-
-    for (int i = 0; i < MAX_BLOCKED_PIDS; i++) {
-        if (semPtr->blockedPIDs[i] != 0) {
-            unblock(semPtr->blockedPIDs[i]);
-            semPtr->blockedPIDs[i] = 0;
-        }
-    }
-
-    semPtr->value = 0;
-    semPtr->id = 0;
-    semPtr->blockedPIDsCount = 0;
-    semPtr->linkedProcesses = 0;
-    semPtr->mutex = 0;
-    for (int i = 0; i < MAX_LENGTH; i++) {
-        semPtr->name[i] = 0;
-    }
+    sem->linkedProcesses--;
     return 0;
+
+
+    // sem_t * semPtr = getSem(id);
+    // if (semPtr == NULL) {
+    //     return -1;
+    // }
+    // semPtr->linkedProcesses--;
+    // if (semPtr->linkedProcesses > 0) {
+    //     return 0;
+    // }
+
+    // for (int i = 0; i < MAX_BLOCKED_PIDS; i++) {
+    //     if (semPtr->blockedPIDs[i] != 0) {
+    //         unblock(semPtr->blockedPIDs[i]);
+    //         semPtr->blockedPIDs[i] = 0;
+    //     }
+    // }
+
+    // semPtr->value = 0;
+    // semPtr->id = 0;
+    // semPtr->blockedPIDsCount = 0;
+    // semPtr->linkedProcesses = 0;
+    // semPtr->mutex = 0;
+    // for (int i = 0; i < MAX_LENGTH; i++) {
+    //     semPtr->name[i] = 0;
+    // }
+    // return 0;
 
 }
 

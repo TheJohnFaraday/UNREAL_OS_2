@@ -10,6 +10,8 @@ uint64_t pid();
 uint64_t block(uint64_t pid);
 uint64_t unblock(uint64_t pid);
 uint64_t kill(uint64_t pid);
+void yield();
+void waitpid(uint64_t pid);
 
 #endif
 

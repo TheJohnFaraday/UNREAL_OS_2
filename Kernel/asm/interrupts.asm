@@ -41,6 +41,9 @@ EXTERN sys_getPID
 EXTERN sys_block
 EXTERN sys_unblock
 EXTERN sys_kill
+EXTERN sys_sem
+EXTERN sys_yield
+EXTERN sys_waitpid
 
 READ equ 0
 WRITE equ 1
@@ -59,8 +62,9 @@ PID equ 13
 BLOCK equ 14
 UNBLOCK equ 15
 KILL equ 16
-
-
+SEM equ 17
+YIELD equ 18
+WAITPID equ 19
 SECTION .text
 
 _cli:
@@ -295,6 +299,14 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .unblock_handler
 	cmp rbx, KILL
 	je .kill_handler
+	cmp rbx, YIELD
+	je .yield_handler
+	cmp rbx, WAITPID
+	je .waitpid_handler
+
+	;Semaphore Syscalls
+	cmp rbx, SEM
+	je .sem_handler
 
 .end_sys:
 	mov rsp,rbp
@@ -367,7 +379,18 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 
 .kill_handler:
 	call sys_kill
-	jmp .end_sys		
+	jmp .end_sys
+
+.sem_handler:
+	call sys_sem
+	jmp .end_sys	
+
+.yield_handler:
+	call sys_yield
+	jmp .end_sys
+.waitpid_handler:
+	call sys_waitpid
+	jmp .end_sys
 
 _exception0Handler:
 	exceptionHandler 0

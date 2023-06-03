@@ -15,7 +15,9 @@ GLOBAL sys_getPID_asm
 GLOBAL sys_block_asm
 GLOBAL sys_unblock_asm
 GLOBAL sys_kill_asm
-
+GLOBAL sys_sem_asm
+GLOBAL sys_yield_asm
+GLOBAL sys_waitpid_asm
 READ equ 0
 WRITE equ 1
 BEEP_INB equ 2
@@ -33,6 +35,9 @@ PID equ 13
 BLOCK equ 14
 UNBLOCK equ 15
 KILL equ 16
+SEM equ 17
+YIELD equ 18
+WAITPID equ 19
 
 SECTION .text
 
@@ -253,3 +258,41 @@ sys_kill_asm:              ;sys_kill_asm(uint64_t)
     mov rsp, rbp
     pop rbp
     ret                
+
+sys_sem_asm:              ;sys_sem_asm(uint32_t id, char * name, uint32_t initValue)
+    push rbp
+    mov rbp, rsp
+
+    mov rcx, rdx
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, SEM
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_yield_asm:              ;sys_yield_asm()
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, YIELD
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_waitpid_asm:              ;sys_waitpid_asm(uint64_t pid)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, WAITPID
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
