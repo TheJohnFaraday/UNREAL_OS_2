@@ -6,6 +6,7 @@
 #include <tron.h>
 #include <color.h>
 #include <procLib.h>
+#include <memLib.h>
 
 
 void shell(){
@@ -49,40 +50,61 @@ void waiting_command(){
         //Now i use strtok for delete the spaces
         char * toRead = my_strtok(line, SPACE);
 
-        char command[MAX_LENGHT] = {0};
+        //char command[MAX_LENGHT] = {0};
         //Consume the command
-        strcpy(command, toRead);
-        toRead = my_strtok (NULL, SPACE);
+        //strcpy(command, toRead);
+        //toRead = my_strtok (NULL, SPACE);
 
-        args tokens;
+        char ** tokens = malloc(sizeof(char *) * MAX_COMMAND);
         
         //Now i consume the args
         int index = 0;
         while (toRead != NULL)
         {   
+            tokens[index] = malloc(sizeof(char) * MAX_LENGHT);
             strcpy(tokens[index++], toRead);
             toRead = my_strtok (NULL, SPACE);
         }
 
-        reading_command(command, tokens, index);
+        for (int i = 0; i < index; i++)
+        {
+            if(!strcmp(tokens[i], "|") && i > 0 && i+1 < index){
+                execute_piped_commands();
+                break;
+            }
+        }
+        
+
+        reading_command(tokens, index-1);
+
+        for (int i = 0; i < index; i++)
+        {
+            free(tokens[i]);
+        }
+        
+        free(tokens);
     }
     
 }
 
 // Checks if command is a valid command and executes it
-void reading_command(char command[MAX_LENGHT], args argsVec, int argsNum){
+void reading_command(char ** argsVec, int argsNum){
 
     int found = 0;
     int args_check = 0;
-    int args = 0;
+    int fg = 1;
     int to_execute;
     for (int i = 0; i < COMMAND_NUMBER && !found; i++){
-        if (!(strcmp(commands[i].name, command))){
+        if (!(strcmp(commands[i].name, argsVec[0]))){
             found = 1;
+            //BackGround?
+            if(!strcmp(argsVec[argsNum-1],"&")){
+                argsNum--;
+                fg=0;
+            }
             //Checking if the amount of args is correct
-           if(commands[i].args == argsNum){
+            if(commands[i].args == argsNum){
                 args_check = 1;
-                args = commands[i].args;
                 to_execute = i;
             }
         }
@@ -90,13 +112,7 @@ void reading_command(char command[MAX_LENGHT], args argsVec, int argsNum){
     }
 
     if(found && args_check){
-        char * argv[args + 1];
-        char * command_name = commands[to_execute].name;
-        argv[0] = command_name;
-        for (int i = 0; i < args; i++){
-            argv[i+1] = argsVec[i];
-        }
-        p_create((void (*)(int, char **))commands[to_execute].function, args+1, argv, 1, 0);
+        p_create((void (*)(int, char **))commands[to_execute].function, argsNum+1, argsVec, fg, 0);
     }
     else if (found && !args_check)
     {
@@ -109,4 +125,8 @@ void reading_command(char command[MAX_LENGHT], args argsVec, int argsNum){
     
     
     return;
+}
+
+void execute_piped_commands(){
+    printfColor("\n PIPE command! \n", white);
 }

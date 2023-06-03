@@ -12,5 +12,6 @@ int strlen(const char *s);
 int strtol(const char *str, char **endptr, int base);
 char * my_strtok(char *srcString, char *delim);
 unsigned int is_delim(char c, char *delim);
+char* my_strchr(const char* str, int c);
 
 #endif

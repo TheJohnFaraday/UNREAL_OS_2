@@ -65,6 +65,21 @@ int strtol(const char *str, char **endptr, int base) {
     return result * sign;
 }
 
+char* my_strchr(const char* str, int c) {
+    while (*str != '\0') {
+        if (*str == c) {
+            return (char*)str;
+        }
+        str++;
+    }
+    
+    if (c == '\0') {
+        return (char*)str;
+    }
+    
+    return NULL;
+}
+
 //https://aticleworld.com/implement-strtok-function-in-c/
 unsigned int is_delim(char c, char *delim)
 {
