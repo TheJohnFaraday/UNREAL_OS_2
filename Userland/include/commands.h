@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define COMMAND_NUMBER 22
+#define COMMAND_NUMBER 23
 #define MAX_PARAMS 4
 #define MAX_LENGHT 20
 #define ALIGNMENT 16
@@ -35,6 +35,7 @@ void biggie(int argsNum, char** argsVec);
 void smalls(int argsNum, char** argsVec);
 void mem_test(int argsNum, char** argsVec);
 void proc_test(int argsNum, char** argsVec);
+void prio_test(int argsNum, char** argsVec);
 void dump(int argsNum, char** argsVec);
 void ps(int argsNum, char** argsVec);
 void loop(int argsNum, char** argsVec);
@@ -61,7 +62,8 @@ static commands_style commands[] = {
     {"getContent", getContent, 1},
     {"memTest", mem_test, 0},
     {"procTest", proc_test, 0},
-    {"dum", dump, 0},
+    {"prioTest", prio_test, 0},
+    {"mem", dump, 0},
     {"ps", ps, 0},
     {"loop", loop, 1},
     {"kill", kill_command, 1},

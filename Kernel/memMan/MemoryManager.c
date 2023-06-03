@@ -134,12 +134,21 @@ void dump(){
     printNewline();
     printString("Total Memory: ");
     printHex(total);
+    printString(" B  (");
+    printDec(total/KILOBYTE);
+    printString(" KB)");
     printNewline();
     printString("Memory used: ");
     printDec(used_memory);
+    printString(" B  (");
+    printDec(used_memory/KILOBYTE);
+    printString(" KB)");
     printNewline();
     printString("Memory Free: ");
     printDec(memory_free);
+    printString(" B  (");
+    printDec(memory_free/KILOBYTE);
+    printString(" KB)");
     printNewline();
 }
 #endif

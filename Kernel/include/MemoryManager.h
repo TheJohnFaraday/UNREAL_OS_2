@@ -9,6 +9,7 @@
 #define START_MEM_USERS 0x600000
 #define END_MEM 0x700000
 #define MINIMUM_ALLOC_SIZE 0x20
+#define KILOBYTE 1024
 #define USED 1
 #define FREE 0
 

@@ -1,6 +1,7 @@
 #include <test_processes.h>
 
 #define MAX_PROCESSES 5
+#define MAJOR_WAIT 10000000
 
 enum State { RUNNING,
              BLOCKED,
@@ -18,7 +19,7 @@ int64_t test_processes() {
 
   p_rq p_rqs[MAX_PROCESSES];
 
-  //while (1) {
+  while (1) {
 
     // Create max_processes processes
     for (rq = 0; rq < MAX_PROCESSES; rq++) {
@@ -51,6 +52,7 @@ int64_t test_processes() {
               printfColor("\nProcess killed with PID: %d", white, p_rqs[rq].pid);
               p_rqs[rq].state = KILLED;
               alive--;
+              bussy_wait(MAJOR_WAIT);
             }
             break;
 
@@ -79,6 +81,6 @@ int64_t test_processes() {
         }
     }
 
-    return 0;
+    //return 0;
   }
-//}
+}

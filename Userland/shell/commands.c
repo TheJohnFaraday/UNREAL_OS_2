@@ -6,25 +6,29 @@
 #include <color.h>
 #include <test_mm.h>
 #include <test_processes.h>
+#include <test_prio.h>
 #include <procLib.h>
 
 // Prints on screen the help menu
 void help(int argsNum, char ** argsVec){
     printfColor("\n", white);
     printfColor("Command List:\n", white);
-    printfColor(" *inforeg -> Prints the registers of screenshot taken previously\n",white);
-    printfColor(" *divzero -> Tests div zero exception\n",white);
-    printfColor(" *invopcode -> Tests invalid opcode exception\n",white);
-    printfColor(" *time -> Prints the current time\n",white);
+    //printfColor(" *inforeg -> Prints the registers of screenshot taken previously\n",white);
+    //printfColor(" *divzero -> Tests div zero exception\n",white);
+    //printfColor(" *invopcode -> Tests invalid opcode exception\n",white);
+    //printfColor(" *time -> Prints the current time\n",white);
     printfColor(" *clear -> Clears the screen\n",white);
-    printfColor(" *tron -> Lets you play tron\n",white);
+    //printfColor(" *tron -> Lets you play tron\n",white);
     printfColor(" *biggie -> Lets you zoom in\n",white);
     printfColor(" *smalls -> Lets you zoom out\n",white);
-    printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
+    //printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
     printfColor(" *ps -> Report a snapshot of the current processes \n",white);
     printfColor(" *help -> Prints this menu\n",white);
     printfColor(" *memTest -> Run the memory manager Test\n",white);
     printfColor(" *procTest -> Run the round robin scheduler Test\n",white);
+    printfColor(" *prioTest -> Run the round robin priority based Tess\n",white);
+    printfColor(" *mem -> Report a snapshot of the current state of the memory\n",white);
+    printfColor(" *nice -> Change the priority of a process\n",white);
 }
 
 // Prints on screen the registers of the screenshot taken previously
@@ -143,19 +147,14 @@ void mem_test(int argsNum, char ** argsVec){
 
 void proc_test(int argsNum, char ** argsVec){
     test_processes();
-}   
+}
+
+void prio_test(int argsNum, char ** argsVec){
+    test_prio();
+}
 
 void dump(int argsNum, char ** argsVec){
-    void * start_address = (void *)0x600000;
-    for (int i = 0; i < 1024; i++)
-    {
-        printfColor("%x",white,*((uint8_t *)start_address));
-        if(i % 100 == 0){
-            printfColor("\n",white);
-        }
-
-         start_address += sizeof(uint8_t);
-    }
+    mem_dump();
     
 }
 
@@ -164,14 +163,17 @@ void ps(int argsNum, char ** argsVec){
 }
 
 void loop(int argsNum, char ** argsVec){
-    // print the ID every second
-    int seconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
-    while(1) {
-        if (sys_ticker_asm(GET_SECONDS_ELAPSED, 0) >= seconds + argsVec[0]) {
-            printfColor("PID: %d\n", white, sys_getPID_asm());
-            seconds = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
+    // print the ID every argsVec[1] seconds
+    int seconds = atoi(argsVec[1]);
+    int time = sys_ticker_asm(GET_SECONDS_ELAPSED,0);
+    while (1)
+    {
+        if(sys_ticker_asm(GET_SECONDS_ELAPSED,0) - time >= seconds){
+            printfColor("ID: %d\n",white,sys_getPID_asm());
+            time = sys_ticker_asm(GET_SECONDS_ELAPSED,0);
         }
     }
+    
 }
 
 void kill_command(int argc, char ** argv){
@@ -182,7 +184,7 @@ void kill_command(int argc, char ** argv){
 }
 
 void nice(int argsNum, char ** argsVec){
-    //sys_nice_asm(argsVec[0], argsVec[1]);
+    changePriority(argsVec[0], argsVec[1]);
 }
 
 void block_command(int argsNum, char ** argsVec){

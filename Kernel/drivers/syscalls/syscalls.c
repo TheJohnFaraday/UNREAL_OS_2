@@ -99,6 +99,10 @@ void sys_free(void * ptr){
     return free(ptr);
 }
 
+void sys_m_dump(){
+    return dump();
+}
+
 uint64_t sys_p_create(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd){
     return newProcess(entryPoint, argc, argv, fg, fd);
 }
@@ -121,4 +125,8 @@ uint64_t sys_unblock(uint64_t pid){
 
 uint64_t sys_kill(uint64_t pid){
     return kill(pid);
+}
+
+void sys_priority(uint64_t pid, int priority){
+    return changePriority(pid, priority);
 }
