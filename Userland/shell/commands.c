@@ -7,6 +7,7 @@
 #include <test_mm.h>
 #include <test_processes.h>
 #include <test_sync.h>
+#include <test_prio.h>
 #include <procLib.h>
 
 // Prints on screen the help menu
@@ -26,7 +27,9 @@ void help(int argsNum, char ** argsVec){
     printfColor(" *help -> Prints this menu\n",white);
     printfColor(" *memTest -> Run the memory manager Test\n",white);
     printfColor(" *procTest -> Run the round robin scheduler Test\n",white);
+    printfColor(" *prioTest -> Run the round robin priority based Tess\n",white);
     printfColor(" *mem -> Report a snapshot of the current state of the memory\n",white);
+    printfColor(" *nice -> Change the priority of a process\n",white);
 }
 
 // Prints on screen the registers of the screenshot taken previously
@@ -145,7 +148,11 @@ void mem_test(int argsNum, char ** argsVec){
 
 void proc_test(int argsNum, char ** argsVec){
     test_processes();
-}   
+}
+
+void prio_test(int argsNum, char ** argsVec){
+    test_prio();
+}
 
 void dump(int argsNum, char ** argsVec){
     mem_dump();
@@ -182,7 +189,7 @@ void kill_command(int argc, char ** argv){
 }
 
 void nice(int argsNum, char ** argsVec){
-    //sys_nice_asm(argsVec[0], argsVec[1]);
+    changePriority(argsVec[0], argsVec[1]);
 }
 
 void block_command(int argsNum, char ** argsVec){

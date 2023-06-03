@@ -9,7 +9,7 @@ void p_display(){
 	return sys_processDisplay_asm();
 }
 
-uint64_t pid(){
+uint64_t get_pid(){
 	return sys_getPID_asm();
 }
 
@@ -31,4 +31,8 @@ void yield(){
 
 void waitpid(uint64_t pid){
 	sys_waitpid_asm(pid);
+}
+
+void changePriority(uint64_t pid, int priority){
+	return sys_priority_asm(pid, priority);
 }

@@ -35,6 +35,7 @@ void biggie(int argsNum, char** argsVec);
 void smalls(int argsNum, char** argsVec);
 void mem_test(int argsNum, char** argsVec);
 void proc_test(int argsNum, char** argsVec);
+void prio_test(int argsNum, char** argsVec);
 void dump(int argsNum, char** argsVec);
 void ps(int argsNum, char** argsVec);
 void loop(int argsNum, char** argsVec);
@@ -62,6 +63,7 @@ static commands_style commands[] = {
     {"getContent", getContent, 1},
     {"memTest", mem_test, 0},
     {"procTest", proc_test, 0},
+    {"prioTest", prio_test, 0},
     {"mem", dump, 0},
     {"ps", ps, 0},
     {"loop", loop, 1},

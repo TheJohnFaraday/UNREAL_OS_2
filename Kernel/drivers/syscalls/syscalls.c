@@ -150,3 +150,6 @@ void sys_yield(){
 void sys_waitpid(uint64_t pid){
     waitpid(pid);
 }
+void sys_priority(uint64_t pid, int priority){
+    return changePriority(pid, priority);
+}

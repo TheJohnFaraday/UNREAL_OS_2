@@ -67,12 +67,13 @@ const char * console_mapper (const struct pressedKeys * keyboardState)
 		else if(specialKey == current_language_mapping->specialKeys.crtl)
 		{
 			uint16_t keycode = MAIN_MAP_HASH(keyboardState->keys[1]);
+			int pid = getCurrentPID();
 			if(WITHIN_BOUNDS(keycode,SIZE_MAIN_MAP))
 				if(*(current_language_mapping->main_map[keycode])=='a'){
 					save_registors();
 				}
-				if (*(current_language_mapping->main_map[keycode])=='c'){
-					kill(getCurrentPID());
+				if (*(current_language_mapping->main_map[keycode])=='c' && pid > 2){
+					kill(pid);
 				}
 				
 		}

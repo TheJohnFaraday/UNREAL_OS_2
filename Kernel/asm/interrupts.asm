@@ -44,6 +44,7 @@ EXTERN sys_kill
 EXTERN sys_sem
 EXTERN sys_yield
 EXTERN sys_waitpid
+EXTERN sys_priority
 
 READ equ 0
 WRITE equ 1
@@ -65,6 +66,9 @@ KILL equ 16
 SEM equ 17
 YIELD equ 18
 WAITPID equ 19
+PRIORITY equ 20
+
+
 SECTION .text
 
 _cli:
@@ -307,6 +311,8 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	;Semaphore Syscalls
 	cmp rbx, SEM
 	je .sem_handler
+	cmp rbx, PRIORITY
+	je .priority_handler
 
 .end_sys:
 	mov rsp,rbp
@@ -391,6 +397,10 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 .waitpid_handler:
 	call sys_waitpid
 	jmp .end_sys
+
+.priority_handler:
+	call sys_priority
+	jmp .end_sys	
 
 _exception0Handler:
 	exceptionHandler 0
