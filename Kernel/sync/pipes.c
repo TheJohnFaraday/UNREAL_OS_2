@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <pipes.h>
+#include <video.h>
 
 static int getFreePipe();
 static uint32_t newPipe(uint32_t pipeId);
@@ -15,7 +16,6 @@ static PipeArray pipesAdmin;
 static uint32_t newPipe(uint32_t pipeId){
     int free = getFreePipe();
     if (free == -1){
-        ncPrint("[Kernel] ERROR: No more pipe slots available.");
         return -1;
     }
 
@@ -26,10 +26,10 @@ static uint32_t newPipe(uint32_t pipeId){
     pipe->writeIdx = 0;
     pipe->totalProcesses = 0;
 
-    int rLock = semOpen(baseSemID++,0);
-    int wLock = semOpen(baseSemID++,0);
+    int rLock = sem_open(baseSemID++,0);
+    int wLock = sem_open(baseSemID++,0);
     if (rLock == -1 || wLock == -1){
-        ncPrint("[Kernel] ERROR: Error creating pipes (mutex variables failure).");
+        //mutex failure
         return -1;
     }
     return pipeId;
@@ -57,8 +57,8 @@ int pipeClose(uint32_t pipeId){
         return 1;
 
     pipe->state = EMPTY;
-    semClose(pipe->readLock);
-    semClose(pipe->writeLock);
+    sem_close(pipe->readLock);
+    sem_close(pipe->writeLock);
     return 1;
 }
 
@@ -69,12 +69,12 @@ int pipeRead(uint32_t pipeId){
 
     Pipe * pipe = &pipesAdmin.pipes[idx];
 
-    semWait(pipe->readLock);
+    sem_wait(pipe->readLock);
 
     char c = pipe->buffer[pipe->readIdx];
     pipe->readIdx = (pipe->readIdx + 1) % LEN;
 
-    semPost(pipe->writeLock);
+    sem_post(pipe->writeLock);
 
     return c;
 }
@@ -95,12 +95,12 @@ uint32_t pipeWrite(uint32_t pipeId, char *str){
 static int setCharAtIdx(int idx, char c){
     Pipe * pipe = &pipesAdmin.pipes[idx];
 
-    semWait(pipe->writeLock);
+    sem_wait(pipe->writeLock);
 
     pipe->buffer[pipe->writeIdx] = c;
     pipe->writeIdx = (pipe->writeIdx + 1) % LEN;
 
-    semPost(pipe->readLock);
+    sem_post(pipe->readLock);
 
     return 0;
 }
@@ -122,17 +122,17 @@ static int getFreePipe(){
 }
 
 void printIndividualPipe(Pipe pipe){
-    ncPrintDec(pipe.id);
-    ncPrint("         ");
-    ncPrintDec((int)pipe.totalProcesses);
-    ncPrint("         ");
-    ncPrint(pipe.buffer);
-    ncNewline();
+    printDec(pipe.id);
+    printString("         ");
+    printDec((int)pipe.totalProcesses);
+    printString("         ");
+    printString(pipe.buffer);
+    printNewline();
 }
 
 void dumpPipes(){
-    ncPrint("ID         NOfProcs         Content");
-    ncNewline();
+    printString("ID         NOfProcs         Content");
+    printNewline();
     for(int i = 0; i < baseSemID; i++){
         if(pipesAdmin.pipes[i].state == OCCUPIED){
             printIndividualPipe(pipesAdmin.pipes[i]);
