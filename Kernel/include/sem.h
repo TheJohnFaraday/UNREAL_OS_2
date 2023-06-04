@@ -1,3 +1,6 @@
+#ifndef SEM_H
+#define SEM_H 
+
 #include <scheduler.h>
 #include <lib.h>
 #include <stdint.h>
@@ -16,8 +19,10 @@ typedef struct sem_t {
     int mutex;
 }sem_t;
 
-sem_t sems[MAX_SEMS];
+int sem_wait(uint32_t id);
+int sem_post(uint32_t id);
+int sem_open(uint32_t id, char *name, uint32_t value);
+int sem_close(uint32_t id);
 
-
-
+#endif
 

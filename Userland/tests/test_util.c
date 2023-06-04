@@ -1,3 +1,5 @@
+#include <stdint.h>
+#include "syscallsAPI.h"
 #include <test_util.h>
 
 // Random

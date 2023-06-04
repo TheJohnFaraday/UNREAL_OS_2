@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define COMMAND_NUMBER 23
+#define COMMAND_NUMBER 24
 #define MAX_PARAMS 4
 #define MAX_LENGHT 20
 #define ALIGNMENT 16
@@ -46,6 +46,7 @@ void cat(int argsNum, char** argsVec);
 void wc(int argsNum, char** argsVec);
 void filter(int argsNum, char** argsVec);
 void phylo(int argsNum, char** argsVec);
+void sem_test(int argsNum, char** argsVec);
 
 
 
@@ -69,10 +70,11 @@ static commands_style commands[] = {
     {"kill", kill_command, 1},
     {"nice", nice, 2},
     {"block", block_command, 1},
-    {"cat", cat, 0},
-    {"wc", wc, 0},
-    {"filter", filter, 0},
-    {"phylo", phylo, 0}
+    {"cat", cat, 1},
+    {"wc", wc, 1},
+    {"filter", filter, 1},
+    {"phylo", phylo, 0},
+    {"semTest", sem_test, 0} //Chequear cuantos args toma
 };
 
 void invalidOpcodeTester();

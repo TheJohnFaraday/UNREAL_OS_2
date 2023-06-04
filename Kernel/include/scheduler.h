@@ -43,7 +43,10 @@ void initScheduler();
 int newProcess(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd);
 void *scheduler(void *oldRSP);
 uint64_t kill(uint64_t pid);
+uint64_t kill_foreground(uint64_t pid);
 uint64_t block(uint64_t pid);
+uint64_t block_keyboard(uint64_t pid);
+uint64_t unblock_keyboard();
 uint64_t unblock(uint64_t pid);
 int getCurrentPID();
 void processDisplay();
@@ -54,6 +57,9 @@ int currentWritesTo();
 void waitForPID(uint64_t pid);
 int getCurrentOutFD();
 int getCurrentInFD();
+void waitpid(uint64_t pid);
+void toggle(uint64_t pid);
+uint64_t getMaxBlockedPID();
 
 #endif
 

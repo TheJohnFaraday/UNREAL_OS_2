@@ -6,29 +6,43 @@
 #include <color.h>
 #include <test_mm.h>
 #include <test_processes.h>
+#include <test_sync.h>
 #include <test_prio.h>
 #include <procLib.h>
+#include <phylo.h>
 
 // Prints on screen the help menu
 void help(int argsNum, char ** argsVec){
     printfColor("\n", white);
     printfColor("Command List:\n", white);
+
+    
+    printfColor(" * biggie -> Lets you zoom in\n",white);
+    printfColor(" * smalls -> Lets you zoom out\n",white);
+    printfColor(" * ps -> Report a snapshot of the current processes \n",white);
+    printfColor(" * help -> Prints this menu\n",white);
+    printfColor(" * memTest -> Run the memory manager Test\n",white);
+    printfColor(" * procTest -> Run the round robin scheduler Test\n",white);
+    printfColor(" * prioTest -> Run the round robin priority based Tess\n",white);
+    printfColor(" * mem -> Report a snapshot of the current state of the memory\n",white);
+    printfColor(" * semTest -> Run a semaphore test with syncronization\n",white);
+    printfColor(" * nice -> Change the priority of a process\n",white);
+    printfColor(" * block -> Block a process Ex: block (PID)\n",white);
+    printfColor(" * kill -> Kill a process Ex: kill (PID)\n",white);
+    printfColor(" * loop -> Print the ID of the process every X seconds Ex: loop (seconds)\n",white);
+    printfColor(" * cat -> Print the content of a file Ex: cat (filename)\n",white);
+    printfColor(" * wc -> Print the number of lines, words and characters of a file Ex: wc (filename)\n",white);
+    printfColor(" * filter -> Print the content of a file in uppercase Ex: filter (filename)\n",white);
+    printfColor(" * phylo -> Run the philosophers problem\n",white);
+    printfColor(" * clear -> Clears the screen\n",white);
+
     //printfColor(" *inforeg -> Prints the registers of screenshot taken previously\n",white);
     //printfColor(" *divzero -> Tests div zero exception\n",white);
     //printfColor(" *invopcode -> Tests invalid opcode exception\n",white);
     //printfColor(" *time -> Prints the current time\n",white);
-    printfColor(" *clear -> Clears the screen\n",white);
     //printfColor(" *tron -> Lets you play tron\n",white);
-    printfColor(" *biggie -> Lets you zoom in\n",white);
-    printfColor(" *smalls -> Lets you zoom out\n",white);
     //printfColor(" *getContent -> Print the next 32 bytes to the memory address you pass as an argument \n",white);
-    printfColor(" *ps -> Report a snapshot of the current processes \n",white);
-    printfColor(" *help -> Prints this menu\n",white);
-    printfColor(" *memTest -> Run the memory manager Test\n",white);
-    printfColor(" *procTest -> Run the round robin scheduler Test\n",white);
-    printfColor(" *prioTest -> Run the round robin priority based Tess\n",white);
-    printfColor(" *mem -> Report a snapshot of the current state of the memory\n",white);
-    printfColor(" *nice -> Change the priority of a process\n",white);
+    
 }
 
 // Prints on screen the registers of the screenshot taken previously
@@ -158,6 +172,10 @@ void dump(int argsNum, char ** argsVec){
     
 }
 
+void sem_test(int argsNum, char ** argsVec){
+    uint64_t result = test_sync(); 
+}
+
 void ps(int argsNum, char ** argsVec){
     p_display();
 }
@@ -188,86 +206,55 @@ void nice(int argsNum, char ** argsVec){
 }
 
 void block_command(int argsNum, char ** argsVec){
-    sys_block_asm(*(uint64_t *)argsVec[0]);
+    int pid = atoi(argsVec[1]);
+    if (pid <= 2){
+        printfColor("You can't block this process\n", white);
+        return;
+    }
+    printfColor("Switching state of process %d\n", white, pid);
+    toggle(pid);
 }
 
 void cat(int argsNum, char ** argsVec){
-    // char * filename = argsVec[0];
-    // int fd = sys_open_asm(filename);
-    // if(fd == -1){
-    //     printfColor("File not found\n", white);
-    //     return;
-    // }
-    // char buffer[100];
-    // int read = sys_read_asm(fd, buffer, 100);
-    // while(read > 0){
-    //     printfColor("%s", white, buffer);
-    //     read = sys_read_asm(fd, buffer, 100);
-    // }
-    // sys_close_asm(fd);
+    int i = 0;
+    while(argsVec[1][i] != '\0' && argsVec[1][i] != '\n'){
+        putChar(argsVec[1][i++]);
+    }
+    putChar('\n');
 }
 
 void wc(int argsNum, char ** argsVec){
-    // char * filename = argsVec[0];
-    // int fd = sys_open_asm(filename);
-    // if(fd == -1){
-    //     printfColor("File not found\n", white);
-    //     return;
-    // }
-    // char buffer[100];
-    // int read = sys_read_asm(fd, buffer, 100);
-    // int lines = 0;
-    // int words = 0;
-    // int chars = 0;
-    // while(read > 0){
-    //     for(int i = 0; i < read; i++){
-    //         if(buffer[i] == '\n'){
-    //             lines++;
-    //         }
-    //         if(buffer[i] == ' ' || buffer[i] == '\n'){
-    //             words++;
-    //         }
-    //         chars++;
-    //     }
-    //     read = sys_read_asm(fd, buffer, 100);
-    // }
-    // printfColor("Lines: %d\n", white, lines);
-    // printfColor("Words: %d\n", white, words);
-    // printfColor("Chars: %d\n", white, chars);
-    // sys_close_asm(fd);
+    int count = 1;
+    for (int i = 0; argsVec[1][i] != '\0'; i++){
+        putChar(argsVec[1][i]);
+        if (argsVec[1][i] == '\n'){
+            count++;
+        }
+    }
+    printfColor("\nLines: %d\n", white, count);
+}
+
+int is_vowel(char c){
+    if (c >= 'A' && c <= 'Z'){
+        c = c + 'a' - 'A';
+    }
+    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'){
+        return 1;
+    }
+    return 0;
 }
 
 void filter(int argsNum, char ** argsVec){
-    // char * filename = argsVec[0];
-    // int fd = sys_open_asm(filename);
-    // if(fd == -1){
-    //     printfColor("File not found\n", white);
-    //     return;
-    // }
-    // char buffer[100];
-    // int read = sys_read_asm(fd, buffer, 100);
-    // while(read > 0){
-    //     for(int i = 0; i < read; i++){
-    //         if(buffer[i] >= 'a' && buffer[i] <= 'z'){
-    //             buffer[i] = buffer[i] - 'a' + 'A';
-    //         }
-    //     }
-    //     sys_write_asm(STDOUT, buffer, read, white);
-    //     read = sys_read_asm(fd, buffer, 100);
-    // }
-    // sys_close_asm(fd);
+   int i = 0;
+    while(argsVec[1][i] != '\0' && argsVec[1][i] != '\n'){
+        if (!is_vowel(argsVec[1][i])){
+            putChar(argsVec[1][i]);
+        }
+        i++;
+    }
+    putChar('\n');
 }
 
 void phylo(int argsNum, char ** argsVec){
-    // int n = argsVec[0];
-    // int forks[n];
-    // for(int i = 0; i < n; i++){
-    //     forks[i] = sys_p_create_asm(philosopher, 0, NULL, 1, NULL);
-    // }
-    // for(int i = 0; i < n; i++){
-    //     sys_unblock_asm(forks[i]);
-    // }
-    // while(1){
-    //     sys_unblock_asm(forks[0]);
-    // }
+    runPhylo();
 }

@@ -19,6 +19,12 @@
 #define GET_SECONDS 2
 #define GET_STATUS_REG_A 3
 
+#define SEM_OPEN 0
+#define SEM_WAIT 1
+#define SEM_POST 2
+#define SEM_CLOSE 3
+#define SEM_UNLINK 4
+
 extern int sys_read_asm(int fd, char *buffer, int size);
 extern int sys_write_asm(int fd, char * str, int length, Color color);
 extern int sys_print_asm(int fd, int size, int coor);
@@ -36,5 +42,10 @@ extern uint64_t sys_getPID_asm();
 extern uint64_t sys_block_asm(uint64_t pid);
 extern uint64_t sys_unblock_asm(uint64_t pid);
 extern uint64_t sys_kill_asm(uint64_t pid);
+extern uint64_t sys_sem_asm(int fd, uint32_t id, char * name, uint32_t value);
+extern void sys_yield_asm();
+extern void sys_waitpid_asm(uint64_t pid);
 extern void sys_priority_asm(uint64_t pid, int priority);
+extern void sys_toggle_asm(uint64_t pid);
+
 #endif

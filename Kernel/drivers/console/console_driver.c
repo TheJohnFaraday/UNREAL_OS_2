@@ -4,6 +4,7 @@
 #include <lib.h>
 #include <stdint.h>
 #include <scheduler.h>
+#include <keyboard_block_stack.h>
 
 #define READ_BUFFER_SIZE_MAX 100
 
@@ -34,7 +35,7 @@ void newInputToConsole(const struct pressedKeys * keyboardState)
     // Unblock the process only if the buffer was previously empty
     if (console_read_buffer_size == utf8_size && reading) {
         reading = 0;
-        unblock(SHELL_PID);
+        unblock_keyboard();
     }
 }
 
@@ -51,7 +52,7 @@ uint64_t read_from_console(void * dest,uint64_t count)
     // Block the process if the buffer is empty
     if (console_read_buffer_size == 0) {
         reading = 1;
-        block(getCurrentPID());
+        block_keyboard(getCurrentPID());
     }
 
     count = count>console_read_buffer_size?console_read_buffer_size:count;

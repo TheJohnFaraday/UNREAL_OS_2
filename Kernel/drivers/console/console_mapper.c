@@ -73,7 +73,7 @@ const char * console_mapper (const struct pressedKeys * keyboardState)
 					save_registors();
 				}
 				if (*(current_language_mapping->main_map[keycode])=='c' && pid > 2){
-					kill(pid);
+					kill_foreground(pid);
 				}
 				
 		}

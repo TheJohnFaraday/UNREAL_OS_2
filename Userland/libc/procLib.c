@@ -25,6 +25,18 @@ uint64_t kill(uint64_t pid){
 	return sys_kill_asm(pid);
 }
 
+void yield(){
+	sys_yield_asm();
+}
+
+void waitpid(uint64_t pid){
+	sys_waitpid_asm(pid);
+}
+
 void changePriority(uint64_t pid, int priority){
 	return sys_priority_asm(pid, priority);
+}
+
+void toggle(uint64_t pid){
+	return sys_toggle_asm(pid);
 }

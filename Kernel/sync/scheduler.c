@@ -3,6 +3,7 @@
 #include <video.h>
 #include <time.h>
 #include <lib.h>
+#include <keyboard_block_stack.h>
 
 #define STACK_SIZE (4 * 1024)
 #define MAX_PRIORITY 40
@@ -58,6 +59,7 @@ static PNode * pDequeue();
 
 static PNode * currentP;
 static PList * processQueue;
+static BlockedStack * keyboard_block_stack;
 static uint64_t PID = 0;
 static uint64_t ticks;
 static PNode * haltP;
@@ -85,6 +87,7 @@ void initScheduler(){
       //ambas colas comienzan en cero*/
       processQueue->prepared = 0;
 
+      keyboard_block_stack = createBlockedStack();
 
       //preparo función halt (The nule process)
       char *argv[] = {"hlt"};
@@ -347,6 +350,14 @@ uint64_t kill(uint64_t pid){
       return aux;
 }
 
+uint64_t kill_foreground(uint64_t pid){
+      if(getProcess(pid)->fg){
+            return kill(pid);
+      }
+
+      return -1;
+}
+
 uint64_t block(uint64_t pid){
       int aux = changeState(pid, BLOCKED);
       if (pid == currentP->pid){
@@ -355,8 +366,32 @@ uint64_t block(uint64_t pid){
       return aux;
 }
 
+uint64_t block_keyboard(uint64_t pid){
+      pushBlockedProcess(keyboard_block_stack, pid);
+      return block(pid);
+}
+
+uint64_t unblock_keyboard(){
+      uint64_t pid = popBlockedProcess(keyboard_block_stack);
+      return unblock(pid);
+}
+
 uint64_t unblock(uint64_t pid){
       return changeState(pid, READY);
+}
+
+void toggle(uint64_t pid){
+      PNode * process = getProcess(pid);
+      if (process == NULL){
+            printString("[Kernel] ERROR: Process PID is not valid.");
+            return;
+      }
+      if (process->state == READY){
+            block(pid);
+      }
+      else{
+            unblock(pid);
+      }
 }
 
 //    ----------------------------
@@ -368,6 +403,35 @@ uint64_t unblock(uint64_t pid){
 
 static uint64_t getPID(){
       return PID++;
+}
+
+void waitpid(uint64_t pid){
+      //block a process until the process with pid is killed
+      if (pid <= 2){
+            printString("[Kernel] ERROR: Invalid PID.");
+            return;
+      }
+      PNode * process = getProcess(pid);
+      if (process == NULL){
+            return;
+      }
+      while(process->state != KILLED){
+            yield();
+      }
+}
+
+uint64_t getMaxBlockedPID() {
+    uint64_t maxPID = 0;
+
+    PNode *aux = processQueue->first;
+    while (aux != NULL) {
+        if (aux->state == BLOCKED && aux->pid > maxPID) {
+            maxPID = aux->pid;
+        }
+        aux = aux->next;
+    }
+
+    return maxPID;
 }
 
 static void createStackFrame(void (*entryPoint)(int, char **), int argc, char **argv, void *rbp){

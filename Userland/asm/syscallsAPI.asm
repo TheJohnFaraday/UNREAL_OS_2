@@ -15,7 +15,11 @@ GLOBAL sys_getPID_asm
 GLOBAL sys_block_asm
 GLOBAL sys_unblock_asm
 GLOBAL sys_kill_asm
+GLOBAL sys_sem_asm
+GLOBAL sys_yield_asm
+GLOBAL sys_waitpid_asm
 GLOBAL sys_priority_asm
+GLOBAL sys_toggle_asm
 
 READ equ 0
 WRITE equ 1
@@ -34,7 +38,11 @@ PID equ 13
 BLOCK equ 14
 UNBLOCK equ 15
 KILL equ 16
-PRIORITY equ 17
+SEM equ 17
+YIELD equ 18
+WAITPID equ 19
+PRIORITY equ 20
+TOGGLE equ 21
 
 SECTION .text
 
@@ -256,6 +264,43 @@ sys_kill_asm:              ;sys_kill_asm(uint64_t)
     pop rbp
     ret                
 
+sys_sem_asm:              ;sys_sem_asm(uint32_t id, char * name, uint32_t initValue)
+    push rbp
+    mov rbp, rsp
+
+    mov rcx, rdx
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, SEM
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_yield_asm:              ;sys_yield_asm()
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, YIELD
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_waitpid_asm:              ;sys_waitpid_asm(uint64_t pid)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, WAITPID
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
 sys_priority_asm:          ;sys_priority_asm(uint64_t pid, int priority)
     push rbp
     mov rbp, rsp
@@ -263,6 +308,18 @@ sys_priority_asm:          ;sys_priority_asm(uint64_t pid, int priority)
     mov rdx, rsi ;Passing arguments from C to syscall parameters
     mov rsi, rdi
     mov rdi, PRIORITY
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_toggle_asm:          ;sys_toggle_asm(uint64_t pid)
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, TOGGLE
+    int 80h
 
     mov rsp, rbp
     pop rbp
