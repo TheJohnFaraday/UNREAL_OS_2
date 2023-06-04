@@ -41,6 +41,11 @@ EXTERN sys_getPID
 EXTERN sys_block
 EXTERN sys_unblock
 EXTERN sys_kill
+EXTERN sys_open_pipe
+EXTERN sys_read_pipe
+EXTERN sys_write_pipe
+EXTERN sys_close_pipe
+EXTERN sys_print_pipes
 
 READ equ 0
 WRITE equ 1
@@ -59,7 +64,11 @@ PID equ 13
 BLOCK equ 14
 UNBLOCK equ 15
 KILL equ 16
-
+OPEN_PIPE 22
+READ_PIPE 23
+WRITE_PIPE 24
+CLOSE_PIPE 25 
+PRINT_PIPES 26
 
 SECTION .text
 
@@ -295,6 +304,38 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .unblock_handler
 	cmp rbx, KILL
 	je .kill_handler
+
+	;Pipes Syscalls
+	cmp rbx, OPEN_PIPE 
+	je .pipe_open_handler
+	cmp rbx, READ_PIPE 
+	je .pipe_read_handler
+	cmp rbx, WRITE_PIPE 
+	je .pipe_write_handler
+	cmp rbx, CLOSE_PIPE 
+	je .pipe_close_handler
+	cmp rbx, PRINT_PIPES 
+	je .pipe_print_handler
+
+.pipe_open_handler
+	call sys_open_pipe
+	jmp .end_sys
+
+.pipe_read_handler
+	call sys_read_pipe
+	jmp .end_sys
+
+.pipe_write_handler
+	call sys_write_pipe
+	jmp .end_sys
+
+.pipe_close_handler
+	call sys_close_pipe
+	jmp .end_sys
+
+.pipe_print_handler
+	call sys_print_pipes
+	jmp .end_sys
 
 .end_sys:
 	mov rsp,rbp

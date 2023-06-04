@@ -35,5 +35,9 @@ uint64_t sys_getPID();
 uint64_t sys_block(uint64_t pid);
 uint64_t sys_unblock(uint64_t pid);
 uint64_t sys_kill(uint64_t pid);
-
+uint64_t sys_open_pipe(uint64_t pipeId);
+uint64_t sys_read_pipe(uint64_t pipeId);
+uint64_t sys_write_pipe(uint64_t pipeId, char *str);
+uint64_t sys_close_pipe(uint64_t pipeId);
+uint64_t sys_print_pipes();
 #endif
