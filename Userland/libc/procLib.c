@@ -36,3 +36,7 @@ void waitpid(uint64_t pid){
 void changePriority(uint64_t pid, int priority){
 	return sys_priority_asm(pid, priority);
 }
+
+void toggle(uint64_t pid){
+	return sys_toggle_asm(pid);
+}

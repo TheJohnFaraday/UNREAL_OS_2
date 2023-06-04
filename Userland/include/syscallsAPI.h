@@ -46,4 +46,6 @@ extern uint64_t sys_sem_asm(int fd, uint32_t id, char * name, uint32_t value);
 extern void sys_yield_asm();
 extern void sys_waitpid_asm(uint64_t pid);
 extern void sys_priority_asm(uint64_t pid, int priority);
+extern void sys_toggle_asm(uint64_t pid);
+
 #endif

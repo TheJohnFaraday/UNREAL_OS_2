@@ -45,6 +45,7 @@ EXTERN sys_sem
 EXTERN sys_yield
 EXTERN sys_waitpid
 EXTERN sys_priority
+EXTERN sys_toggle
 
 READ equ 0
 WRITE equ 1
@@ -67,6 +68,7 @@ SEM equ 17
 YIELD equ 18
 WAITPID equ 19
 PRIORITY equ 20
+TOGGLE equ 21
 
 
 SECTION .text
@@ -307,6 +309,8 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .yield_handler
 	cmp rbx, WAITPID
 	je .waitpid_handler
+	cmp rbx, TOGGLE
+	je .toggle_handler
 
 	;Semaphore Syscalls
 	cmp rbx, SEM
@@ -401,6 +405,10 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 .priority_handler:
 	call sys_priority
 	jmp .end_sys	
+
+.toggle_handler:
+	call sys_toggle
+	jmp .end_sys
 
 _exception0Handler:
 	exceptionHandler 0

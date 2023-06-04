@@ -45,5 +45,6 @@ uint64_t sys_sem(int fd, uint32_t id, char * name, uint32_t value);
 void sys_yield();
 void sys_waitpid(uint64_t pid);
 void sys_priority(uint64_t pid, int priority);
+void sys_toggle(uint64_t pid); 
 
 #endif

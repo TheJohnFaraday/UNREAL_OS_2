@@ -70,9 +70,9 @@ static commands_style commands[] = {
     {"kill", kill_command, 1},
     {"nice", nice, 2},
     {"block", block_command, 1},
-    {"cat", cat, 0},
-    {"wc", wc, 0},
-    {"filter", filter, 0},
+    {"cat", cat, 1},
+    {"wc", wc, 1},
+    {"filter", filter, 1},
     {"phylo", phylo, 0},
     {"semTest", sem_test, 0} //Chequear cuantos args toma
 };
