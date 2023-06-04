@@ -230,4 +230,45 @@ void free(void *ptr) {
   list_push(&buckets[bucket], (list_t *)ptr_for_node(i, bucket));
 }
 
+void dump() {
+    size_t total_memory = MAX_ALLOC - MIN_ALLOC;
+    size_t memory_used = 0;
+
+    // Calcular la memoria utilizada
+    for (int i = 0; i < BUCKET_COUNT; i++) {
+        list_t *bucket = &buckets[i];
+        list_t *current = bucket->next;
+        while (current != bucket) {
+            memory_used += current->size;
+            current = current->next;
+        }
+    }
+
+    // Calcular la memoria libre
+    size_t memory_free = total_memory - memory_used;
+
+    printString("Memory Status");
+    printNewline();
+    printString("Total Memory: ");
+    printDec(total_memory);
+    printString(" B (");
+    printDec(total_memory / KILOBYTE);
+    printString(" KB)");
+    printNewline();
+    printString("Memory Used: ");
+    printDec(memory_used);
+    printString(" B (");
+    printDec(memory_used / KILOBYTE);
+    printString(" KB)");
+    printNewline();
+    printString("Memory Free: ");
+    printDec(memory_free);
+    printString(" B (");
+    printDec(memory_free / KILOBYTE);
+    printString(" KB)");
+    printNewline();
+}
+
+
+
 #endif
