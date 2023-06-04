@@ -46,6 +46,11 @@ EXTERN sys_yield
 EXTERN sys_waitpid
 EXTERN sys_priority
 EXTERN sys_toggle
+EXTERN sys_open_pipe
+EXTERN sys_read_pipe
+EXTERN sys_write_pipe
+EXTERN sys_close_pipe
+EXTERN sys_print_pipes
 
 READ equ 0
 WRITE equ 1
@@ -70,6 +75,11 @@ WAITPID equ 19
 PRIORITY equ 20
 TOGGLE equ 21
 
+OPEN_PIPE 22
+READ_PIPE 23
+WRITE_PIPE 24
+CLOSE_PIPE 25 
+PRINT_PIPES 26
 
 SECTION .text
 
@@ -317,6 +327,38 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	je .sem_handler
 	cmp rbx, PRIORITY
 	je .priority_handler
+
+	;Pipes Syscalls
+	cmp rbx, OPEN_PIPE 
+	je .pipe_open_handler
+	cmp rbx, READ_PIPE 
+	je .pipe_read_handler
+	cmp rbx, WRITE_PIPE 
+	je .pipe_write_handler
+	cmp rbx, CLOSE_PIPE 
+	je .pipe_close_handler
+	cmp rbx, PRINT_PIPES 
+	je .pipe_print_handler
+
+.pipe_open_handler
+	call sys_open_pipe
+	jmp .end_sys
+
+.pipe_read_handler
+	call sys_read_pipe
+	jmp .end_sys
+
+.pipe_write_handler
+	call sys_write_pipe
+	jmp .end_sys
+
+.pipe_close_handler
+	call sys_close_pipe
+	jmp .end_sys
+
+.pipe_print_handler
+	call sys_print_pipes
+	jmp .end_sys
 
 .end_sys:
 	mov rsp,rbp

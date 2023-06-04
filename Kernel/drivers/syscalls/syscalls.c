@@ -18,28 +18,54 @@ extern uint64_t registerBuffer;
 
 //In this case, *str is the buffer and lenght his dim
 uint64_t sys_read(int fd, char * str, int length){
-   switch (fd)
-   {
-        case STDIN:
-			return read_from_console(str,length);
-        default:
-            return -1;
+    uint64_t whereTo = getCurrentOutFD();
+    if(whereTo == STDIN){
+        return read_from_console(str,length);
+    }
+    else{
+        return pipeRead(whereTo);
     }
 }
 
 // Syscall used to write in the screen
 // Arguments, fd is the file descriptor, str is the buffer, length is dim and color is the color
 uint64_t sys_write(int fd, char * str, int length, Color color){
-    switch (fd){
+    uint64_t whereFrom = getCurrentInFD();
+    if(whereFrom == 0){
+        switch (fd){
         case STDOUT:
             printStringColor(str, color);
             return length;
         case STDERR:
             printStringColor(str, red);
             return length;
-        default:
-            return -1;
+        
+        }
     }
+    else{
+        return pipeWrite(whereFrom, str);
+    }
+}
+
+uint64_t sys_open_pipe(uint64_t pipeId){
+    return (uint64_t) pipeOpen((uint32_t) pipeId);
+}
+
+uint64_t sys_read_pipe(uint64_t pipeId){
+    return (uint64_t) pipeRead((uint32_t) pipeId);
+}
+
+uint64_t sys_write_pipe(uint64_t pipeId, char *str){
+    return (uint64_t) pipeWrite((uint32_t) pipeId, str);
+}
+
+uint64_t sys_close_pipe(uint64_t pipeId){
+    return (uint64_t) pipeClose((uint32_t) pipeId);
+}
+
+uint64_t sys_print_pipes(){
+    dumpPipes();
+    return 0;
 }
 
 // Syscall used to print blocks of color in the screen
