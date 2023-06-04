@@ -7,13 +7,15 @@
 #define NAME_SIZE 50
 #define SHELL_PID 2
 
-typedef enum{
+typedef enum
+{
       READY,
       BLOCKED,
       KILLED
 } State;
 
-typedef struct{
+typedef struct
+{
       uint64_t gs;
       uint64_t fs;
       uint64_t r15;
@@ -62,7 +64,3 @@ void toggle(uint64_t pid);
 uint64_t getMaxBlockedPID();
 
 #endif
-
-
-
-

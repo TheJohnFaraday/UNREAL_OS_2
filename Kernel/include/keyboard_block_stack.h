@@ -6,7 +6,8 @@
 
 #define MAX_STACK_SIZE 100
 
-typedef struct {
+typedef struct
+{
     uint64_t stack[MAX_STACK_SIZE];
     int top;
 } BlockedStack;

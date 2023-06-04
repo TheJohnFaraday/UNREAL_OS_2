@@ -6,31 +6,34 @@
 
 // Start of the game
 // Awaits for the user to press the space bar to start the game
-void tron(){
+void tron()
+{
     tronMenu();
     char c = 0;
     int found = 0;
-    while (!found){
-        while ((c = getChar()) != ' '){
-            if (c == 'q'){
+    while (!found)
+    {
+        while ((c = getChar()) != ' ')
+        {
+            if (c == 'q')
+            {
                 return;
             }
         }
         found = 1;
     }
     tronGame();
-    
 }
 
 // Prints the menu of the game
-void tronMenu(){
+void tronMenu()
+{
     clearScreen();
-    printfColor("Welcome to Tron!\n",white);
-    printfColor("Press spacebar start the game\n",white);
-    printfColor("Press q to exit the game\n\n",white);
-    printfColor("Player 1: W A S D\n",white);
-    printfColor("Player 2: I J K L\n",white);
-
+    printfColor("Welcome to Tron!\n", white);
+    printfColor("Press spacebar start the game\n", white);
+    printfColor("Press q to exit the game\n\n", white);
+    printfColor("Player 1: W A S D\n", white);
+    printfColor("Player 2: I J K L\n", white);
 }
 
 // Runs the game
@@ -39,10 +42,11 @@ void tronMenu(){
 // Checks if the players have collided with the walls or with each other
 // Prints the new position of the players
 // When it ends, it prints the winner and makes a beep
-void tronGame(){
-    sys_print_asm(CLEAR_SCREEN,0,0);
-    player_position player1 = {300,500,BLOCK_SIZE,0};
-    player_position player2 = {500,300,-BLOCK_SIZE,0};
+void tronGame()
+{
+    sys_print_asm(CLEAR_SCREEN, 0, 0);
+    player_position player1 = {300, 500, BLOCK_SIZE, 0};
+    player_position player2 = {500, 300, -BLOCK_SIZE, 0};
 
     sys_print_asm(PLAYER_ONE, player1.x, player1.y);
     sys_print_asm(PLAYER_TWO, player2.x, player2.y);
@@ -57,7 +61,6 @@ void tronGame(){
     int time_length = BASE_SPEED;
     int speed_cycles = 0;
     int time = sys_ticker_asm(GET_TIME, time_length);
-    
 
     while ((c = getChar()) != '\b' && !player1_status && !player2_status)
     {
@@ -115,12 +118,11 @@ void tronGame(){
             player2.y_dir = 0;
         }
 
-
-        if (sys_ticker_asm(GET_TIME,time_length) != time)
+        if (sys_ticker_asm(GET_TIME, time_length) != time)
         {
             speed_cycles++;
-            
-            time = sys_ticker_asm(GET_TIME,time_length);
+
+            time = sys_ticker_asm(GET_TIME, time_length);
             player1.x += player1.x_dir;
             player1.y += player1.y_dir;
             player2.x += player2.x_dir;
@@ -128,23 +130,23 @@ void tronGame(){
 
             player1_status = sys_print_asm(PLAYER_ONE, player1.x, player1.y);
             player2_status = sys_print_asm(PLAYER_TWO, player2.x, player2.y);
-            
-            if (speed_cycles == SPEED_CYCLES){
+
+            if (speed_cycles == SPEED_CYCLES)
+            {
                 time_length <= MAX_SPEED ? time_length : time_length--;
                 speed_cycles = 0;
             }
         }
-    
     }
-    sys_print_asm(CLEAR_SCREEN,0,0);
-    if (player1_status == 1){
-        printfColor("Player BLUE wins!\n",white);
+    sys_print_asm(CLEAR_SCREEN, 0, 0);
+    if (player1_status == 1)
+    {
+        printfColor("Player BLUE wins!\n", white);
         beep();
     }
-    if (player2_status == 1){
-        printfColor("Player RED wins!\n",white);
+    if (player2_status == 1)
+    {
+        printfColor("Player RED wins!\n", white);
         beep();
     }
-
 }
-

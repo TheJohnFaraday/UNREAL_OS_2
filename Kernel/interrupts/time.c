@@ -3,18 +3,22 @@
 
 static unsigned long ticks = 0;
 
-void timer_handler(void) {
+void timer_handler(void)
+{
 	ticks++;
 }
 
-int ticks_elapsed() {
+int ticks_elapsed()
+{
 	return ticks;
 }
 
-int seconds_elapsed() {
+int seconds_elapsed()
+{
 	return ticks / 18;
 }
 
-int time_elapsed(int divisor) {
+int time_elapsed(int divisor)
+{
 	return ticks / divisor;
 }

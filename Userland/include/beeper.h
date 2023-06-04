@@ -7,5 +7,4 @@ void beep();
 void rickroll();
 void timer_wait(int t);
 
-
 #endif

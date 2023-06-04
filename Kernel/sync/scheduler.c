@@ -9,17 +9,18 @@
 #define MAX_PRIORITY 40
 #define MAX_LEN 30
 
-//Each process is described like a node
-typedef struct PNode{
-      struct PNode * next;
+// Each process is described like a node
+typedef struct PNode
+{
+      struct PNode *next;
 
       uint64_t pid;
       uint64_t ppid;
 
       State state;
 
-      void * rsp;
-      void * rbp;
+      void *rsp;
+      void *rbp;
 
       int fd[2];
       int priority;
@@ -27,13 +28,14 @@ typedef struct PNode{
 
       char name[NAME_SIZE];
       int argc;
-      char ** argv;
-      
+      char **argv;
+
 } PNode;
 
-typedef struct PList{
-      PNode * first;
-      PNode * last;
+typedef struct PList
+{
+      PNode *first;
+      PNode *last;
 
       uint32_t size;
       uint32_t prepared;
@@ -42,27 +44,26 @@ typedef struct PList{
 // General declarations
 
 static void haltFunc(int argc, char **argv);
-void emptyBuff(char * buff);
+void emptyBuff(char *buff);
 static void createStackFrame(void (*entryPoint)(int, char **), int argc, char **argv, void *rbp);
-static int frame(PNode * newP);
+static int frame(PNode *newP);
 static uint64_t getPID();
 static void wrapper(void (*entryPoint)(int, char **), int argc, char **argv);
 static void exit();
 static void freeP(PNode *process);
-static PNode * getProcess(uint64_t pid);
+static PNode *getProcess(uint64_t pid);
 
 // Queue declarations
 
 static void pEnqueue(PNode *newP);
-static PNode * pDequeue();
+static PNode *pDequeue();
 
-
-static PNode * currentP;
-static PList * processQueue;
-static BlockedStack * keyboard_block_stack;
+static PNode *currentP;
+static PList *processQueue;
+static BlockedStack *keyboard_block_stack;
 static uint64_t PID = 0;
 static uint64_t ticks;
-static PNode * haltP;
+static PNode *haltP;
 
 //    ----------------------------
 //    |                          |
@@ -71,59 +72,65 @@ static PNode * haltP;
 //    |                          |
 //    ----------------------------
 
-
-
-void initScheduler(){
+void initScheduler()
+{
       processQueue = allocMemory(sizeof(PList));
-      if (processQueue == NULL){
+      if (processQueue == NULL)
+      {
             printString("Error initializing scheduler.");
             return;
       }
-      
+
       processQueue->first = NULL;
-      //último y primero apuntan al mismo lugar*/
+      // último y primero apuntan al mismo lugar*/
       processQueue->last = processQueue->first;
       processQueue->size = 0;
-      //ambas colas comienzan en cero*/
+      // ambas colas comienzan en cero*/
       processQueue->prepared = 0;
 
       keyboard_block_stack = createBlockedStack();
 
-      //preparo función halt (The nule process)
+      // preparo función halt (The nule process)
       char *argv[] = {"hlt"};
       newProcess(&haltFunc, 1, argv, 0, 0);
       haltP = pDequeue();
 }
 
-int newProcess(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd){
+int newProcess(void (*entryPoint)(int, char **), int argc, char **argv, int fg, int *fd)
+{
 
       if (entryPoint == NULL)
             return -1;
 
-      PNode * newP = allocMemory(sizeof(PNode));
-      if (newP == NULL){
+      PNode *newP = allocMemory(sizeof(PNode));
+      if (newP == NULL)
+      {
             return -1;
       }
 
       strcpy(argv[0], newP->name);
 
-      if (fg > 1 || fg < 0){
+      if (fg > 1 || fg < 0)
+      {
             printString("[Kernel] ERROR: Error creating process, fg value out of bounds");
             free(newP);
             return -1;
       }
 
-      if(frame(newP) == -1){
+      if (frame(newP) == -1)
+      {
             return -1;
       }
 
       newP->pid = getPID();
 
-      if(currentP == NULL){
+      if (currentP == NULL)
+      {
             newP->ppid = 0;
             newP->fg = fg;
       }
-      else{
+      else
+      {
             newP->ppid = currentP->pid;
             newP->fg = currentP->fg ? fg : 0;
       }
@@ -135,22 +142,25 @@ int newProcess(void (*entryPoint)(int, char **), int argc, char **argv, int fg, 
 
       newP->state = READY;
 
-      char ** newArgvs = args(argv, argc);
+      char **newArgvs = args(argv, argc);
       newP->argc = argc;
       newP->argv = newArgvs;
       createStackFrame(entryPoint, argc, newArgvs, newP->rbp);
       pEnqueue(newP);
-      
-      if (newP->fg && newP->ppid){
+
+      if (newP->fg && newP->ppid)
+      {
             block(newP->ppid);
       }
 
       return newP->pid;
 }
 
-static int frame(PNode * newP) {
+static int frame(PNode *newP)
+{
       newP->rbp = allocMemory(STACK_SIZE);
-      if (newP->rbp == NULL){
+      if (newP->rbp == NULL)
+      {
             return -1;
       }
 
@@ -160,86 +170,103 @@ static int frame(PNode * newP) {
       return 0;
 }
 
-void *scheduler(void * rsp){
- 
-      
-      //si el proceso actual está listo y tiene ciclos, que siga
-      if (currentP->state == READY && ticks > 0){
+void *scheduler(void *rsp)
+{
+
+      // si el proceso actual está listo y tiene ciclos, que siga
+      if (currentP->state == READY && ticks > 0)
+      {
             ticks--;
             return rsp;
       }
 
       currentP->rsp = rsp;
-      if (currentP->pid != haltP->pid){
-            if(currentP->state == KILLED) {
-                  PNode * fatherProcess = getProcess(currentP->ppid);
-                  if(fatherProcess != NULL && fatherProcess->state == BLOCKED) 
+      if (currentP->pid != haltP->pid)
+      {
+            if (currentP->state == KILLED)
+            {
+                  PNode *fatherProcess = getProcess(currentP->ppid);
+                  if (fatherProcess != NULL && fatherProcess->state == BLOCKED)
                         unblock(fatherProcess->pid);
                   freeP(currentP);
-            } else {
+            }
+            else
+            {
                   pEnqueue(currentP);
             }
       }
-      
-      if (processQueue->prepared > 0){
-            PNode * aux;
-            do {
+
+      if (processQueue->prepared > 0)
+      {
+            PNode *aux;
+            do
+            {
                   aux = pDequeue();
-                  if (aux->state == KILLED){
+                  if (aux->state == KILLED)
+                  {
                         freeP(aux);
                   }
-                  if (aux->state == BLOCKED){
+                  if (aux->state == BLOCKED)
+                  {
                         pEnqueue(aux);
                   }
-            }
-            while (aux->state != READY);
+            } while (aux->state != READY);
             currentP = aux;
             ticks = currentP->priority;
       }
-      else{
+      else
+      {
             currentP = haltP; // No tenemos procesos listos --> Haltea el kernel
       }
-      
+
       return currentP->rsp;
 }
 
-
-
-static void freeP(PNode * process){
+static void freeP(PNode *process)
+{
       free((void *)((char *)process->rbp - STACK_SIZE + 1));
-      for (int i = 0; i < process->argc; i++){
+      for (int i = 0; i < process->argc; i++)
+      {
             free(process->argv[i]);
       }
       free(process->argv);
-      
+
       free((void *)process);
 }
 
-static PNode * getProcess(uint64_t pid){
-      
-      if (currentP != NULL && currentP->pid == pid){
+static PNode *getProcess(uint64_t pid)
+{
+
+      if (currentP != NULL && currentP->pid == pid)
+      {
             return currentP;
       }
-      PNode * aux = processQueue->first;
-      for (; aux != NULL; aux = aux->next){
-            if (aux->pid == pid){
+      PNode *aux = processQueue->first;
+      for (; aux != NULL; aux = aux->next)
+      {
+            if (aux->pid == pid)
+            {
                   return aux;
             }
       }
       return NULL;
 }
 
-void changePriority(uint64_t pid, int priority){
-      if (priority < 0){
+void changePriority(uint64_t pid, int priority)
+{
+      if (priority < 0)
+      {
             printString("[Kernel] WARNING: Priority required is invalid. Setting to minimum.");
             priority = 0;
       }
-      if (priority > MAX_PRIORITY){
+      if (priority > MAX_PRIORITY)
+      {
             printString("[Kernel] WARNING: Priority required is invalid. Setting to maximum.");
             priority = MAX_PRIORITY;
       }
-      PNode * aux = getProcess(pid);
-      if (aux != NULL){
+      PNode *aux = getProcess(pid);
+      if (aux != NULL)
+      {
             uint64_t prevPriority = aux->priority;
             aux->priority = priority;
             printString("New priority set for process with PID: ");
@@ -250,13 +277,15 @@ void changePriority(uint64_t pid, int priority){
             printDec(priority);
             printNewline();
       }
-      else{
+      else
+      {
             printString("[Kernel] ERROR: Process PID does not match with any existing processQueue. Returning.");
             printNewline();
       }
 }
 
-void yield(){
+void yield()
+{
       ticks = 0;
       timerInterrupt();
 }
@@ -268,34 +297,36 @@ void yield(){
 //    |                          |
 //    ----------------------------
 
-static void pEnqueue(PNode * newP){ 
-      if (processQueue->size == 0){ //soy el primero?
+static void pEnqueue(PNode *newP)
+{
+      if (processQueue->size == 0)
+      { // soy el primero?
             processQueue->first = newP;
             processQueue->last = processQueue->first;
       }
-      else{
+      else
+      {
             processQueue->last->next = newP;
             newP->next = NULL;
             processQueue->last = newP;
       }
 
       processQueue->size++;
-      
-      if (newP->state == READY){
+
+      if (newP->state == READY)
+      {
             processQueue->prepared++;
       }
-      
 }
 
-static PNode * pDequeue(){
+static PNode *pDequeue()
+{
 
-      
-      PNode * aux = processQueue->first;
+      PNode *aux = processQueue->first;
       processQueue->size--;
-      
+
       if (aux->state == READY)
             processQueue->prepared--;
-
 
       processQueue->first = processQueue->first->next;
       return aux;
@@ -308,39 +339,47 @@ static PNode * pDequeue(){
 //    |                          |
 //    ----------------------------
 
-char * stateName(State state){
-      if(state == READY)
+char *stateName(State state)
+{
+      if (state == READY)
             return "Ready";
-      else if(state == BLOCKED)
+      else if (state == BLOCKED)
             return "Blocked";
       else
             return "Killed";
 }
 
-static uint64_t changeState(uint64_t pid, State newState){
-      PNode * process = getProcess(pid);
-      if (process == NULL || process->state == KILLED){
+static uint64_t changeState(uint64_t pid, State newState)
+{
+      PNode *process = getProcess(pid);
+      if (process == NULL || process->state == KILLED)
+      {
             printString("[Kernel] ERROR: Process PID is not valid.");
             return -1;
       }
-      if (process == currentP){
+      if (process == currentP)
+      {
             process->state = newState;
             return process->pid;
       }
-      if (process->state != READY && newState == READY){
+      if (process->state != READY && newState == READY)
+      {
             processQueue->prepared++;
       }
-      if (process->state == READY && newState != READY){
+      if (process->state == READY && newState != READY)
+      {
             processQueue->prepared--;
       }
-      
+
       process->state = newState;
-      
+
       return process->pid;
 }
 
-uint64_t kill(uint64_t pid){
-      if (pid <= 2){
+uint64_t kill(uint64_t pid)
+{
+      if (pid <= 2)
+      {
             printString("[Kernel] ERROR: Invalid PID.");
             return -1;
       }
@@ -350,46 +389,57 @@ uint64_t kill(uint64_t pid){
       return aux;
 }
 
-uint64_t kill_foreground(uint64_t pid){
-      if(getProcess(pid)->fg){
+uint64_t kill_foreground(uint64_t pid)
+{
+      if (getProcess(pid)->fg)
+      {
             return kill(pid);
       }
 
       return -1;
 }
 
-uint64_t block(uint64_t pid){
+uint64_t block(uint64_t pid)
+{
       int aux = changeState(pid, BLOCKED);
-      if (pid == currentP->pid){
-           yield();
+      if (pid == currentP->pid)
+      {
+            yield();
       }
       return aux;
 }
 
-uint64_t block_keyboard(uint64_t pid){
+uint64_t block_keyboard(uint64_t pid)
+{
       pushBlockedProcess(keyboard_block_stack, pid);
       return block(pid);
 }
 
-uint64_t unblock_keyboard(){
+uint64_t unblock_keyboard()
+{
       uint64_t pid = popBlockedProcess(keyboard_block_stack);
       return unblock(pid);
 }
 
-uint64_t unblock(uint64_t pid){
+uint64_t unblock(uint64_t pid)
+{
       return changeState(pid, READY);
 }
 
-void toggle(uint64_t pid){
-      PNode * process = getProcess(pid);
-      if (process == NULL){
+void toggle(uint64_t pid)
+{
+      PNode *process = getProcess(pid);
+      if (process == NULL)
+      {
             printString("[Kernel] ERROR: Process PID is not valid.");
             return;
       }
-      if (process->state == READY){
+      if (process->state == READY)
+      {
             block(pid);
       }
-      else{
+      else
+      {
             unblock(pid);
       }
 }
@@ -401,40 +451,49 @@ void toggle(uint64_t pid){
 //    |                          |
 //    ----------------------------
 
-static uint64_t getPID(){
+static uint64_t getPID()
+{
       return PID++;
 }
 
-void waitpid(uint64_t pid){
-      //block a process until the process with pid is killed
-      if (pid <= 2){
+void waitpid(uint64_t pid)
+{
+      // block a process until the process with pid is killed
+      if (pid <= 2)
+      {
             printString("[Kernel] ERROR: Invalid PID.");
             return;
       }
-      PNode * process = getProcess(pid);
-      if (process == NULL){
+      PNode *process = getProcess(pid);
+      if (process == NULL)
+      {
             return;
       }
-      while(process->state != KILLED){
+      while (process->state != KILLED)
+      {
             yield();
       }
 }
 
-uint64_t getMaxBlockedPID() {
-    uint64_t maxPID = 0;
+uint64_t getMaxBlockedPID()
+{
+      uint64_t maxPID = 0;
 
-    PNode *aux = processQueue->first;
-    while (aux != NULL) {
-        if (aux->state == BLOCKED && aux->pid > maxPID) {
-            maxPID = aux->pid;
-        }
-        aux = aux->next;
-    }
+      PNode *aux = processQueue->first;
+      while (aux != NULL)
+      {
+            if (aux->state == BLOCKED && aux->pid > maxPID)
+            {
+                  maxPID = aux->pid;
+            }
+            aux = aux->next;
+      }
 
-    return maxPID;
+      return maxPID;
 }
 
-static void createStackFrame(void (*entryPoint)(int, char **), int argc, char **argv, void *rbp){
+static void createStackFrame(void (*entryPoint)(int, char **), int argc, char **argv, void *rbp)
+{
       StackFrame *frame = (StackFrame *)rbp - 1;
       frame->gs = 0x001;
       frame->fs = 0x002;
@@ -461,20 +520,24 @@ static void createStackFrame(void (*entryPoint)(int, char **), int argc, char **
       frame->base = 0x000;
 }
 
-void emptyBuff(char * buff){
-      for(int i = 0; buff[i] != '\0'; i++){
+void emptyBuff(char *buff)
+{
+      for (int i = 0; buff[i] != '\0'; i++)
+      {
             buff[i] = 0;
       }
 }
 
-void printIndividualProcess(PNode * process){
-      if(process != NULL){
+void printIndividualProcess(PNode *process)
+{
+      if (process != NULL)
+      {
             char buff[MAX_LEN] = {0};
             printString("   ");
             printString(itoa(process->pid, buff, 10));
             emptyBuff(buff);
             printString("     ");
-            printString(itoa(process->fg,buff,10));
+            printString(itoa(process->fg, buff, 10));
             emptyBuff(buff);
             printString("     ");
             printString(itoa((uint64_t)process->rsp, buff, 16));
@@ -489,49 +552,61 @@ void printIndividualProcess(PNode * process){
       }
 }
 
-void processDisplay(){
-    printString("\nPID      FG       RSP              RBP              STATE        NAME");
-    printNewline();
-    if (currentP != NULL){
-        printIndividualProcess(currentP);
-    }
-    PNode * iter = processQueue->first;
-    while(iter){
-        printIndividualProcess(iter);
-        iter = iter->next;
-    }
+void processDisplay()
+{
+      printString("\nPID      FG       RSP              RBP              STATE        NAME");
+      printNewline();
+      if (currentP != NULL)
+      {
+            printIndividualProcess(currentP);
+      }
+      PNode *iter = processQueue->first;
+      while (iter)
+      {
+            printIndividualProcess(iter);
+            iter = iter->next;
+      }
 }
 
-int getCurrentPID(){
+int getCurrentPID()
+{
       return currentP ? currentP->pid : -1;
 }
 
-static void haltFunc(int argc, char ** argv){
-    while(1){
-        __asm__("hlt");
-    }
+static void haltFunc(int argc, char **argv)
+{
+      while (1)
+      {
+            __asm__("hlt");
+      }
 }
 
-static void exit(){
+static void exit()
+{
       kill(currentP->pid);
       timerInterrupt();
 }
 
-int getCurrentOutFD(){
-      if(currentP != NULL){
+int getCurrentOutFD()
+{
+      if (currentP != NULL)
+      {
             return currentP->fd[1];
       }
       return -1;
 }
 
-int getCurrentInFD(){
-      if(currentP != NULL){
+int getCurrentInFD()
+{
+      if (currentP != NULL)
+      {
             return currentP->fd[0];
       }
       return -1;
 }
 
-static void wrapper(void (*entryPoint)(int, char **), int argc, char ** argv){
+static void wrapper(void (*entryPoint)(int, char **), int argc, char **argv)
+{
       entryPoint(argc, argv);
       exit();
 }

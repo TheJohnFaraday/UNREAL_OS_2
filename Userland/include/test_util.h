@@ -1,6 +1,6 @@
-#include <stdioAPI.h>
+#include "procLib.h"
 #include <stdint.h>
-#include <procLib.h>
+#include "stdioAPI.h"
 
 uint32_t GetUint();
 uint32_t GetUniform(uint32_t max);

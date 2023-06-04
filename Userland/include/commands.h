@@ -14,41 +14,38 @@ typedef char args[MAX_PARAMS][MAX_LENGHT];
 
 typedef struct
 {
-    char * name;
-    void (*function) (int argsNum, char ** argsVec);
-    int args;
+  char *name;
+  void (*function)(int argsNum, char **argsVec);
+  int args;
 
-}commands_style;
+} commands_style;
 
+// static commands_style commands[COMMAND_NUMBER];
 
-//static commands_style commands[COMMAND_NUMBER];
-
-void inforeg(int argsNum, char** argsVec);
-void help(int argsNum, char** argsVec);
-void div_zero_exception_tester(int argsNum, char** argsVec);
-void invalid_opcode_exception_tester(int argsNum, char** argsVec);
-void tron_command(int argsNum, char** argsVec);
-void time(int argsNum, char** argsVec);
-void getContent(int argsNum, char** argsVec);
-void clear(int argsNum, char** argsVec);
-void biggie(int argsNum, char** argsVec);
-void smalls(int argsNum, char** argsVec);
-void mem_test(int argsNum, char** argsVec);
-void proc_test(int argsNum, char** argsVec);
-void prio_test(int argsNum, char** argsVec);
-void dump(int argsNum, char** argsVec);
-void ps(int argsNum, char** argsVec);
-void loop(int argsNum, char** argsVec);
-void kill_command(int argc, char** argv);
-void nice(int argsNum, char** argsVec);
-void block_command(int argsNum, char** argsVec);
-void cat(int argsNum, char** argsVec);
-void wc(int argsNum, char** argsVec);
-void filter(int argsNum, char** argsVec);
-void phylo(int argsNum, char** argsVec);
-void sem_test(int argsNum, char** argsVec);
-
-
+void inforeg(int argsNum, char **argsVec);
+void help(int argsNum, char **argsVec);
+void div_zero_exception_tester(int argsNum, char **argsVec);
+void invalid_opcode_exception_tester(int argsNum, char **argsVec);
+void tron_command(int argsNum, char **argsVec);
+void time(int argsNum, char **argsVec);
+void getContent(int argsNum, char **argsVec);
+void clear(int argsNum, char **argsVec);
+void biggie(int argsNum, char **argsVec);
+void smalls(int argsNum, char **argsVec);
+void mem_test(int argsNum, char **argsVec);
+void proc_test(int argsNum, char **argsVec);
+void prio_test(int argsNum, char **argsVec);
+void dump(int argsNum, char **argsVec);
+void ps(int argsNum, char **argsVec);
+void loop(int argsNum, char **argsVec);
+void kill_command(int argc, char **argv);
+void nice(int argsNum, char **argsVec);
+void block_command(int argsNum, char **argsVec);
+void cat(int argsNum, char **argsVec);
+void wc(int argsNum, char **argsVec);
+void filter(int argsNum, char **argsVec);
+void phylo(int argsNum, char **argsVec);
+void sem_test(int argsNum, char **argsVec);
 
 static commands_style commands[] = {
     {"biggie", biggie, 0},
@@ -56,10 +53,10 @@ static commands_style commands[] = {
     {"inforeg", inforeg, 0},
     {"help", help, 0},
     {"divzero", div_zero_exception_tester, 0},
-    {"invopcode",invalid_opcode_exception_tester, 0},
-    {"time",time, 0},
+    {"invopcode", invalid_opcode_exception_tester, 0},
+    {"time", time, 0},
     {"clear", clear, 0},
-    {"tron",tron_command, 0},
+    {"tron", tron_command, 0},
     {"getContent", getContent, 1},
     {"memTest", mem_test, 0},
     {"procTest", proc_test, 0},
@@ -74,7 +71,7 @@ static commands_style commands[] = {
     {"wc", wc, 1},
     {"filter", filter, 1},
     {"phylo", phylo, 0},
-    {"semTest", sem_test, 0} //Chequear cuantos args toma
+    {"semTest", sem_test, 0} // Chequear cuantos args toma
 };
 
 void invalidOpcodeTester();

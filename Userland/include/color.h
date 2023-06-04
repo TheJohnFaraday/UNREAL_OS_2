@@ -1,14 +1,16 @@
 #ifndef _COLOR_H_
 #define _COLOR_H_
 
-//RGB colors to display in VESA screen. Anyway, framebuffer writes in memory in the following order: blue, green and red
+// RGB colors to display in VESA screen. Anyway, framebuffer writes in memory in
+// the following order: blue, green and red
 
 #include <stdint.h>
 
-typedef struct {
-	uint8_t b;
-	uint8_t g;
-	uint8_t r;
+typedef struct
+{
+  uint8_t b;
+  uint8_t g;
+  uint8_t r;
 } Color;
 
 extern const Color white;

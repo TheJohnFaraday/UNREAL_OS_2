@@ -13,7 +13,6 @@
 #define USED 1
 #define FREE 0
 
-
 typedef struct MemoryManagerCDT *MemoryManagerADT;
 
 void createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);

@@ -10,13 +10,14 @@
 
 int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
-void test_prio() {
+void test_prio()
+{
   int64_t pids[TOTAL_PROCESSES];
-  char *argv[] = {"endlessLoop",0};
+  char *argv[] = {"endlessLoop", 0};
   uint64_t i;
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    pids[i] = p_create((void (*)(int, char **))&endless_loop_print, 2, argv,0,0);
+    pids[i] = p_create((void (*)(int, char **)) & endless_loop_print, 2, argv, 0, 0);
 
   bussy_wait(WAIT);
   printfColor("\nCHANGING PRIORITIES...\n", white);

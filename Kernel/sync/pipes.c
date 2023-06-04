@@ -11,36 +11,41 @@ static int getPipeIdx(uint32_t pipeId);
 uint32_t baseSemID = 300;
 static PipeArray pipesAdmin;
 
-//pipe functions
+// pipe functions
 
-static uint32_t newPipe(uint32_t pipeId){
+static uint32_t newPipe(uint32_t pipeId)
+{
     int free = getFreePipe();
-    if (free == -1){
+    if (free == -1)
+    {
         return -1;
     }
 
-    Pipe * pipe = &pipesAdmin.pipes[free];
+    Pipe *pipe = &pipesAdmin.pipes[free];
     pipe->id = pipeId;
     pipe->state = OCCUPIED;
     pipe->readIdx = 0;
     pipe->writeIdx = 0;
     pipe->totalProcesses = 0;
 
-    int rLock = sem_open(baseSemID++,0);
-    int wLock = sem_open(baseSemID++,0);
-    if (rLock == -1 || wLock == -1){
-        //mutex failure
+    int rLock = sem_open(baseSemID++, 0);
+    int wLock = sem_open(baseSemID++, 0);
+    if (rLock == -1 || wLock == -1)
+    {
+        // mutex failure
         return -1;
     }
     return pipeId;
 }
 
-uint32_t pipeOpen(uint32_t pipeId){
+uint32_t pipeOpen(uint32_t pipeId)
+{
     int idx = getPipeIdx(pipeId);
     if (idx == -1)
     {
         idx = newPipe(pipeId);
-        if (idx == -1){
+        if (idx == -1)
+        {
             return -1;
         }
     }
@@ -48,11 +53,12 @@ uint32_t pipeOpen(uint32_t pipeId){
     return pipeId;
 }
 
-int pipeClose(uint32_t pipeId){
+int pipeClose(uint32_t pipeId)
+{
     int idx = getPipeIdx(pipeId);
     if (idx == -1)
         return -1;
-    Pipe * pipe = &pipesAdmin.pipes[idx];
+    Pipe *pipe = &pipesAdmin.pipes[idx];
     if (--pipe->totalProcesses > 0)
         return 1;
 
@@ -62,12 +68,13 @@ int pipeClose(uint32_t pipeId){
     return 1;
 }
 
-int pipeRead(uint32_t pipeId){
+int pipeRead(uint32_t pipeId)
+{
     int idx = getPipeIdx(pipeId);
     if (idx == -1)
         return -1;
 
-    Pipe * pipe = &pipesAdmin.pipes[idx];
+    Pipe *pipe = &pipesAdmin.pipes[idx];
 
     sem_wait(pipe->readLock);
 
@@ -79,21 +86,25 @@ int pipeRead(uint32_t pipeId){
     return c;
 }
 
-uint32_t pipeWrite(uint32_t pipeId, char *str){
+uint32_t pipeWrite(uint32_t pipeId, char *str)
+{
     int idx = getPipeIdx(pipeId);
-    if (idx == -1){
+    if (idx == -1)
+    {
         return -1;
     }
-    while (*str != 0){
-        setCharAtIdx(idx, *str++); 
+    while (*str != 0)
+    {
+        setCharAtIdx(idx, *str++);
         // Para tener mas control sobre la concurrencia, se toma y libera el semáforo
         // cada vez que se escribe un char
     }
     return pipeId;
 }
 
-static int setCharAtIdx(int idx, char c){
-    Pipe * pipe = &pipesAdmin.pipes[idx];
+static int setCharAtIdx(int idx, char c)
+{
+    Pipe *pipe = &pipesAdmin.pipes[idx];
 
     sem_wait(pipe->writeLock);
 
@@ -105,23 +116,28 @@ static int setCharAtIdx(int idx, char c){
     return 0;
 }
 
-static int getPipeIdx(uint32_t pipeId){
-    for (int i = 0; i < MAX_PIPES; i++){
+static int getPipeIdx(uint32_t pipeId)
+{
+    for (int i = 0; i < MAX_PIPES; i++)
+    {
         if (pipesAdmin.pipes[i].state == OCCUPIED && pipesAdmin.pipes[i].id == pipeId)
             return i;
     }
     return -1;
 }
 
-static int getFreePipe(){
-    for (int i = 0; i < MAX_PIPES; i++){
+static int getFreePipe()
+{
+    for (int i = 0; i < MAX_PIPES; i++)
+    {
         if (pipesAdmin.pipes[i].state == EMPTY)
             return i;
     }
     return -1;
 }
 
-void printIndividualPipe(Pipe pipe){
+void printIndividualPipe(Pipe pipe)
+{
     printDec(pipe.id);
     printString("         ");
     printDec((int)pipe.totalProcesses);
@@ -130,11 +146,14 @@ void printIndividualPipe(Pipe pipe){
     printNewline();
 }
 
-void dumpPipes(){
+void dumpPipes()
+{
     printString("ID         NOfProcs         Content");
     printNewline();
-    for(int i = 0; i < baseSemID; i++){
-        if(pipesAdmin.pipes[i].state == OCCUPIED){
+    for (int i = 0; i < baseSemID; i++)
+    {
+        if (pipesAdmin.pipes[i].state == OCCUPIED)
+        {
             printIndividualPipe(pipesAdmin.pipes[i]);
         }
     }

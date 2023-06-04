@@ -9,7 +9,8 @@
 #define CLEAR_SCREEN 3
 #define BLOCK_SIZE 10
 
-typedef struct {
+typedef struct
+{
     int x;
     int y;
     int x_dir;

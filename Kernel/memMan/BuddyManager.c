@@ -8,7 +8,8 @@
 #define MAX_ALLOC ((size_t)1 << MAX_ALLOC_LOG2)
 #define BUCKET_COUNT (MAX_ALLOC_LOG2 - MIN_ALLOC_LOG2 + 1)
 
-typedef struct list_t {
+typedef struct list_t
+{
   struct list_t *prev, *next;
 } list_t;
 
@@ -22,7 +23,8 @@ static uint8_t *base_ptr;
 
 static uint8_t *max_ptr;
 
-static int update_max_ptr(uint8_t *new_value) {
+static int update_max_ptr(uint8_t *new_value)
+{
   if (new_value > max_ptr)
   {
     max_ptr = new_value;
@@ -30,12 +32,14 @@ static int update_max_ptr(uint8_t *new_value) {
   return 1;
 }
 
-static void list_init(list_t *list) {
+static void list_init(list_t *list)
+{
   list->prev = list;
   list->next = list;
 }
 
-static void list_push(list_t *list, list_t *entry) {
+static void list_push(list_t *list, list_t *entry)
+{
   list_t *prev = list->prev;
   entry->prev = prev;
   entry->next = list;
@@ -43,43 +47,52 @@ static void list_push(list_t *list, list_t *entry) {
   list->prev = entry;
 }
 
-static void list_remove(list_t *entry) {
+static void list_remove(list_t *entry)
+{
   list_t *prev = entry->prev;
   list_t *next = entry->next;
   prev->next = next;
   next->prev = prev;
 }
 
-static list_t *list_pop(list_t *list) {
+static list_t *list_pop(list_t *list)
+{
   list_t *back = list->prev;
-  if (back == list) return NULL;
+  if (back == list)
+    return NULL;
   list_remove(back);
   return back;
 }
 
-static uint8_t *ptr_for_node(size_t index, size_t bucket) {
+static uint8_t *ptr_for_node(size_t index, size_t bucket)
+{
   return base_ptr + ((index - (1 << bucket) + 1) << (MAX_ALLOC_LOG2 - bucket));
 }
 
-static size_t node_for_ptr(uint8_t *ptr, size_t bucket) {
+static size_t node_for_ptr(uint8_t *ptr, size_t bucket)
+{
   return ((ptr - base_ptr) >> (MAX_ALLOC_LOG2 - bucket)) + (1 << bucket) - 1;
 }
 
-static int parent_is_split(size_t index) {
+static int parent_is_split(size_t index)
+{
   index = (index - 1) / 2;
   return (node_is_split[index / 8] >> (index % 8)) & 1;
 }
 
-static void flip_parent_is_split(size_t index) {
+static void flip_parent_is_split(size_t index)
+{
   index = (index - 1) / 2;
   node_is_split[index / 8] ^= 1 << (index % 8);
 }
 
-static size_t bucket_for_request(size_t request) {
+static size_t bucket_for_request(size_t request)
+{
   size_t bucket = BUCKET_COUNT - 1;
   size_t size = MIN_ALLOC;
 
-  while (size < request) {
+  while (size < request)
+  {
     bucket--;
     size *= 2;
   }
@@ -120,14 +133,17 @@ static int lower_bucket_limit(size_t bucket)
   return 1;
 }
 
-void createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory){
-  base_ptr=NULL;
+void createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory)
+{
+  base_ptr = NULL;
 }
 
-void *allocMemory(const size_t memoryToAllocate) {
+void *allocMemory(const size_t memoryToAllocate)
+{
   size_t original_bucket, bucket;
 
-  if (memoryToAllocate + HEADER_SIZE > MAX_ALLOC) {
+  if (memoryToAllocate + HEADER_SIZE > MAX_ALLOC)
+  {
     return NULL;
   }
 
@@ -140,7 +156,6 @@ void *allocMemory(const size_t memoryToAllocate) {
     list_init(&buckets[BUCKET_COUNT - 1]);
     list_push(&buckets[BUCKET_COUNT - 1], (list_t *)base_ptr);
   }
-
 
   bucket = bucket_for_request(memoryToAllocate + HEADER_SIZE);
   original_bucket = bucket;
@@ -200,7 +215,8 @@ void *allocMemory(const size_t memoryToAllocate) {
   return NULL;
 }
 
-void free(void *ptr) {
+void free(void *ptr)
+{
   size_t bucket, i;
 
   if (!ptr)
@@ -230,45 +246,46 @@ void free(void *ptr) {
   list_push(&buckets[bucket], (list_t *)ptr_for_node(i, bucket));
 }
 
-void dump() {
-    size_t total_memory = MAX_ALLOC - MIN_ALLOC;
-    size_t memory_used = 0;
+void dump()
+{
+  size_t total_memory = MAX_ALLOC - MIN_ALLOC;
+  size_t memory_used = 0;
 
-    // Calcular la memoria utilizada
-    for (int i = 0; i < BUCKET_COUNT; i++) {
-        list_t *bucket = &buckets[i];
-        list_t *current = bucket->next;
-        while (current != bucket) {
-            memory_used += current->size;
-            current = current->next;
-        }
+  // Calcular la memoria utilizada
+  for (int i = 0; i < BUCKET_COUNT; i++)
+  {
+    list_t *bucket = &buckets[i];
+    list_t *current = bucket->next;
+    while (current != bucket)
+    {
+      memory_used += current->size;
+      current = current->next;
     }
+  }
 
-    // Calcular la memoria libre
-    size_t memory_free = total_memory - memory_used;
+  // Calcular la memoria libre
+  size_t memory_free = total_memory - memory_used;
 
-    printString("Memory Status");
-    printNewline();
-    printString("Total Memory: ");
-    printDec(total_memory);
-    printString(" B (");
-    printDec(total_memory / KILOBYTE);
-    printString(" KB)");
-    printNewline();
-    printString("Memory Used: ");
-    printDec(memory_used);
-    printString(" B (");
-    printDec(memory_used / KILOBYTE);
-    printString(" KB)");
-    printNewline();
-    printString("Memory Free: ");
-    printDec(memory_free);
-    printString(" B (");
-    printDec(memory_free / KILOBYTE);
-    printString(" KB)");
-    printNewline();
+  printString("Memory Status");
+  printNewline();
+  printString("Total Memory: ");
+  printDec(total_memory);
+  printString(" B (");
+  printDec(total_memory / KILOBYTE);
+  printString(" KB)");
+  printNewline();
+  printString("Memory Used: ");
+  printDec(memory_used);
+  printString(" B (");
+  printDec(memory_used / KILOBYTE);
+  printString(" KB)");
+  printNewline();
+  printString("Memory Free: ");
+  printDec(memory_free);
+  printString(" B (");
+  printDec(memory_free / KILOBYTE);
+  printString(" KB)");
+  printNewline();
 }
-
-
 
 #endif

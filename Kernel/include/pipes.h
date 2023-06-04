@@ -8,7 +8,6 @@
 #define OCCUPIED 1
 #define EMPTY 0
 
-
 typedef struct
 {
     uint32_t id;
