@@ -10,12 +10,14 @@
 #define BACKSPACE '\x08'
 #define DELETE 127
 #define MAX_READ 100
-#define MAX_COMMAND 10
+#define MAX_LINE 10
+#define MAX_COMMAND 3
 
 void shell();
-void reading_command(char **argsVec, int argsNum);
+int exec_command(char **argsVec, int argsNum, int isPipe, int *fd, int fg);
 void waiting_command();
 void printShellMenu();
-void execute_piped_commands();
+void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos);
+int exec_pipe_command(char **argsVec, int argsNum, int fdIn, int fdOut, int fg);
 
 #endif

@@ -18,14 +18,14 @@ extern uint64_t registerBuffer;
 // In this case, *str is the buffer and lenght his dim
 uint64_t sys_read(int fd, char *str, int length)
 {
-    uint64_t whereTo = getCurrentOutFD();
-    if (whereTo == STDIN)
+    uint64_t whereFrom = getCurrentInFD();
+    if (whereFrom == 0)
     {
         return read_from_console(str, length);
     }
     else
     {
-        return pipeRead(whereTo);
+        return pipeRead(str,whereFrom);
     }
 }
 
@@ -33,8 +33,8 @@ uint64_t sys_read(int fd, char *str, int length)
 // Arguments, fd is the file descriptor, str is the buffer, length is dim and color is the color
 uint64_t sys_write(int fd, char *str, int length, Color color)
 {
-    uint64_t whereFrom = getCurrentInFD();
-    if (whereFrom == 0)
+    uint64_t whereTo = getCurrentOutFD();
+    if (whereTo == 1)
     {
         switch (fd)
         {
@@ -48,7 +48,7 @@ uint64_t sys_write(int fd, char *str, int length, Color color)
     }
     else
     {
-        return pipeWrite(whereFrom, str);
+        return pipeWrite(whereTo, str);
     }
 }
 

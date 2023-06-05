@@ -20,6 +20,11 @@ GLOBAL sys_yield_asm
 GLOBAL sys_waitpid_asm
 GLOBAL sys_priority_asm
 GLOBAL sys_toggle_asm
+GLOBAL sys_open_pipe_asm
+GLOBAL sys_read_pipe_asm
+GLOBAL sys_write_pipe_asm
+GLOBAL sys_close_pipe_asm
+GLOBAL sys_print_pipes_asm
 
 READ equ 0
 WRITE equ 1
@@ -43,6 +48,11 @@ YIELD equ 18
 WAITPID equ 19
 PRIORITY equ 20
 TOGGLE equ 21
+OPEN_PIPE equ 22
+READ_PIPE equ 23
+WRITE_PIPE equ 24
+CLOSE_PIPE equ 25 
+PRINT_PIPES equ 26
 
 SECTION .text
 
@@ -324,3 +334,63 @@ sys_toggle_asm:          ;sys_toggle_asm(uint64_t pid)
     mov rsp, rbp
     pop rbp
     ret
+
+sys_open_pipe_asm:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, OPEN_PIPE
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+sys_read_pipe_asm:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, READ_PIPE
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret        
+
+sys_write_pipe_asm:
+    push rbp
+    mov rbp, rsp
+
+    mov rdx, rsi ;Passing arguments from C to syscall parameters
+    mov rsi, rdi
+    mov rdi, WRITE_PIPE
+
+    mov rsp, rbp
+    pop rbp
+    ret       
+
+sys_close_pipe_asm:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, CLOSE_PIPE
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret 
+
+sys_print_pipes_asm:     
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, PRINT_PIPES
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret 
+

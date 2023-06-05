@@ -68,7 +68,7 @@ int pipeClose(uint32_t pipeId)
     return 1;
 }
 
-int pipeRead(uint32_t pipeId)
+int pipeRead(char * str, uint32_t pipeId)
 {
     int idx = getPipeIdx(pipeId);
     if (idx == -1)
@@ -76,14 +76,14 @@ int pipeRead(uint32_t pipeId)
 
     Pipe *pipe = &pipesAdmin.pipes[idx];
 
-    sem_wait(pipe->readLock);
+    //sem_wait(pipe->readLock);
 
-    char c = pipe->buffer[pipe->readIdx];
+    str[0] = pipe->buffer[pipe->readIdx];
     pipe->readIdx = (pipe->readIdx + 1) % LEN;
 
-    sem_post(pipe->writeLock);
+    //sem_post(pipe->writeLock);
 
-    return c;
+    return 1;
 }
 
 uint32_t pipeWrite(uint32_t pipeId, char *str)
@@ -106,12 +106,12 @@ static int setCharAtIdx(int idx, char c)
 {
     Pipe *pipe = &pipesAdmin.pipes[idx];
 
-    sem_wait(pipe->writeLock);
+    //sem_wait(pipe->writeLock);
 
     pipe->buffer[pipe->writeIdx] = c;
     pipe->writeIdx = (pipe->writeIdx + 1) % LEN;
 
-    sem_post(pipe->readLock);
+    //sem_post(pipe->readLock);
 
     return 0;
 }

@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#define EOF -1
+
 void putChar(const char c);
 char getChar();
 int printfColor(const char *fmt, Color color, ...);

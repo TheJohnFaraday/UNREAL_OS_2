@@ -7,6 +7,10 @@
 #include <string.h>
 #include <syscallsAPI.h>
 #include <tron.h>
+#include <pipeLib.h>
+#include <semLib.h>
+
+static int pipe_fd = 2;
 
 void shell()
 {
@@ -23,6 +27,8 @@ void waiting_command()
     char command_reader[MAX_READ];
     printfColor("\n%s", pink, "$ ");
     int count = 0;
+    int pipe_exec = 0;
+
     char current;
     while ((current = getChar()) != ENTER)
     {
@@ -58,7 +64,7 @@ void waiting_command()
     // strcpy(command, toRead);
     // toRead = my_strtok (NULL, SPACE);
 
-    char **tokens = malloc(sizeof(char *) * MAX_COMMAND);
+    char **tokens = malloc(sizeof(char *) * MAX_LINE);
 
     // Now i consume the args
     int index = 0;
@@ -73,12 +79,15 @@ void waiting_command()
     {
       if (!strcmp(tokens[i], "|") && i > 0 && i + 1 < index)
       {
-        execute_piped_commands();
+        parsing_pipe_commands(tokens, index ,i);
+        pipe_exec++;
         break;
       }
     }
 
-    reading_command(tokens, index - 1);
+    if(!pipe_exec){
+      exec_command(tokens, index - 1, 0, 0, 1);
+    }
 
     for (int i = 0; i < index; i++)
     {
@@ -90,12 +99,10 @@ void waiting_command()
 }
 
 // Checks if command is a valid command and executes it
-void reading_command(char **argsVec, int argsNum)
+int exec_command(char **argsVec, int argsNum, int isPipe, int *fd, int fg)
 {
-
   int found = 0;
   int args_check = 0;
-  int fg = 1;
   int to_execute;
   for (int i = 0; i < COMMAND_NUMBER && !found; i++)
   {
@@ -103,11 +110,11 @@ void reading_command(char **argsVec, int argsNum)
     {
       found = 1;
       // BackGround?
-      if (!strcmp(argsVec[argsNum - 1], "&"))
-      {
-        argsNum--;
-        fg = 0;
-      }
+     // if (!strcmp(argsVec[argsNum - 1], "&"))
+      //{
+      //  argsNum--;
+      //  fg = 0;
+      //}
       // Checking if the amount of args is correct
       if (commands[i].args == argsNum)
       {
@@ -119,20 +126,104 @@ void reading_command(char **argsVec, int argsNum)
 
   if (found && args_check)
   {
-    p_create((void (*)(int, char **))commands[to_execute].function, argsNum + 1,
-             argsVec, fg, 0);
+    if(isPipe){
+      return p_create((void (*)(int, char **))commands[to_execute].function, argsNum + 1,
+             argsVec, fg, fd);
+    }
+    else {
+      return p_create((void (*)(int, char **))commands[to_execute].function, argsNum + 1,
+              argsVec, 1, 0);
+    }
   }
   else if (found && !args_check)
   {
     printfColor("\n Invalid params\n", white);
+    return -1;
   }
 
   else
   {
     printfColor("\n Command Not found\n", white);
+    return -1;
   }
-
-  return;
 }
 
-void execute_piped_commands() { printfColor("\n PIPE command! \n", white); }
+void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos) 
+{ 
+  
+  printfColor("\n PIPE command! \n", white); 
+
+  //We separate the two commands
+  uint64_t pids[2];
+  char ** argsVec1 = malloc(sizeof(char *) * MAX_COMMAND);
+  char ** argsVec2 = malloc(sizeof(char *) * MAX_COMMAND);
+  int argc1 = 0;
+  int argc2 = 0;
+
+  uint64_t pipe = open_pipe(pipe_fd);
+
+  int i = 0;
+  for (; i < pipePos; i++)
+  {
+      argsVec1[i] = malloc(sizeof(char) * MAX_LENGHT);
+      strcpy(argsVec1[i], argsVec[i]);
+      argc1++;
+  }
+  
+   pids[0] = exec_pipe_command(argsVec1, argc1, 0, pipe, 1);
+
+   if (pids[0] == -1){
+        close_pipe(pipe);
+        //Not forget to free resources
+        return;
+   }
+
+  i++;
+
+  for (int j = 0; i < argsNum; j++)
+  {
+      argsVec2[j] = malloc(sizeof(char) * MAX_LENGHT);
+      strcpy(argsVec2[j], argsVec[i++]);
+      argc2++;
+  }
+
+  pids[1] = exec_pipe_command(argsVec2, argc2, pipe, 1, 1);
+
+  if (pids[1] == -1){
+        close_pipe(pipe);
+        //Not forget to free resources
+        return;
+   }
+
+    //int a = -1;
+
+    //write_pipe(pipe, (char *)&a);
+    //sem_wait(pids[0]);
+    close_pipe(pipe);
+
+    for (int i = 0; i < argc1; i++)
+    {
+      free(argsVec1[i]);
+    }
+    
+    free(argsVec1);
+
+    for (int i = 0; i < argc2; i++)
+    {
+      free(argsVec2[i]);
+    }
+    
+    free(argsVec2);
+
+    return; 
+
+}
+
+int exec_pipe_command(char **argsVec, int argsNum, int fdIn, int fdOut, int fg){
+      int fd[2];
+
+      fd[0] = fdIn;
+      fd[1] = fdOut;
+
+      return exec_command(argsVec, argsNum-1, 1, fd, fg);
+}

@@ -47,5 +47,9 @@ extern void sys_yield_asm();
 extern void sys_waitpid_asm(uint64_t pid);
 extern void sys_priority_asm(uint64_t pid, int priority);
 extern void sys_toggle_asm(uint64_t pid);
-
+extern uint64_t sys_open_pipe_asm(uint64_t pipeId);
+extern uint64_t sys_read_pipe_asm(uint64_t pipeId);
+extern uint64_t sys_write_pipe_asm(uint64_t pipeId, char *str);
+extern uint64_t sys_close_pipe_asm(uint64_t pipeId);
+extern uint64_t sys_print_pipes_asm();
 #endif

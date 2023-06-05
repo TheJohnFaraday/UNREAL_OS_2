@@ -13,6 +13,7 @@ static char *buffer_read_start = console_read_buffer;
 static char *buffer_read_end = console_read_buffer;
 static uint8_t console_read_buffer_size = 0;
 static int reading = 0;
+static int eof = 0;
 
 // receives a keyboard state struct and adds the corresponding utf8 encoded string to the console read buffer
 // Arguments : current keyboard state updated by the keryboard driver
@@ -56,6 +57,11 @@ uint64_t read_from_console(void *dest, uint64_t count)
         block_keyboard(getCurrentPID());
     }
 
+    if(EOF_signal()){
+        offEOF();
+        return -1;
+    }
+
     count = count > console_read_buffer_size ? console_read_buffer_size : count;
     for (int i = 0; i < count; i++)
     {
@@ -63,5 +69,20 @@ uint64_t read_from_console(void *dest, uint64_t count)
         buffer_read_start = console_read_buffer + ((buffer_read_start - console_read_buffer + 1) % READ_BUFFER_SIZE_MAX);
     }
     console_read_buffer_size -= count;
+
+
     return count;
+}
+
+
+void onEOF(){
+    eof = 1;
+}
+
+void offEOF(){
+    eof = 0;
+}
+
+int EOF_signal(){
+    return eof;
 }

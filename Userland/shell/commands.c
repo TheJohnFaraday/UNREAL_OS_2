@@ -246,15 +246,18 @@ void cat(int argsNum, char **argsVec)
 
 void wc(int argsNum, char **argsVec)
 {
+    char current;
     int count = 1;
-    for (int i = 0; argsVec[1][i] != '\0'; i++)
+
+    while ((current = getChar()) != '\0')
     {
-        putChar(argsVec[1][i]);
-        if (argsVec[1][i] == '\n')
+       putChar(current);
+        if (current == '\n')
         {
             count++;
         }
     }
+
     printfColor("\nLines: %d\n", white, count);
 }
 
@@ -273,14 +276,13 @@ int is_vowel(char c)
 
 void filter(int argsNum, char **argsVec)
 {
-    int i = 0;
-    while (argsVec[1][i] != '\0' && argsVec[1][i] != '\n')
+    char current;
+    while ((current = getChar()) != '\0')
     {
-        if (!is_vowel(argsVec[1][i]))
+        if (is_vowel(current))
         {
-            putChar(argsVec[1][i]);
+            putChar(current);
         }
-        i++;
     }
     putChar('\n');
 }
