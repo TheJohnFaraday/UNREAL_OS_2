@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include <stdarg.h>
 #include <stdint.h>
@@ -36,7 +38,7 @@ int printfColor(const char *str, Color color, ...)
 	va_list vl;
 	int i = 0, j = 0;
 	char buff[100] = {0}, tmp[20];
-	va_start(vl, str);
+	va_start(vl, color);
 	while (str && str[i])
 	{
 		if (str[i] == '%')

@@ -1,5 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <stdint.h>
-#include <shell.h>
+#include <commands.h>
 #include <stdioAPI.h>
 #include <tron.h>
 #include <syscallsAPI.h>
@@ -196,6 +198,7 @@ void ps(int argsNum, char **argsVec)
 
 void loop(int argsNum, char **argsVec)
 {
+    putChar('\n');
     // print the ID every argsVec[1] seconds
     int seconds = atoi(argsVec[1]);
     int time = sys_ticker_asm(GET_SECONDS_ELAPSED, 0);
@@ -219,7 +222,7 @@ void kill_command(int argc, char **argv)
 
 void nice(int argsNum, char **argsVec)
 {
-    changePriority(argsVec[0], argsVec[1]);
+    changePriority(atoi(argsVec[0]), atoi(argsVec[1]));
 }
 
 void block_command(int argsNum, char **argsVec)
@@ -240,7 +243,7 @@ void cat(int argsNum, char **argsVec)
     int i = 0;
     while(argsVec[1][i] != '\0' && argsVec[1][i] != '\n')
         putChar(argsVec[1][i++]);
-    putChar("\n");
+    putChar('\n');
 }
 
 void wc(int argsNum, char **argsVec)

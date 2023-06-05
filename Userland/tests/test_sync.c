@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <test_sync.h>
 
 #define SEM_NAME "test_semaphore"
@@ -15,18 +17,17 @@ void slowInc(int64_t *p, int64_t inc)
   *p = aux;
 }
 
-uint64_t my_process_inc(uint64_t argc, char *argv[])
+void my_process_inc(uint64_t argc, char *argv[])
 {
 
   uint64_t n;
   int64_t inc;
   int8_t use_sem;
-  char *name = argv[0];
 
   if ((n = satoi(argv[1])) <= 0)
-    return -1;
+    return;
   if ((inc = satoi(argv[2])) == 0)
-    return -1;
+    return;
 
   use_sem = 1;
 
@@ -34,7 +35,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[])
     if (!sem_open(SEM_ID, SEM_NAME, 1))
     {
       printfColor("test_sync: ERROR opening semaphore\n", red);
-      return -1;
+      return;
     }
 
   uint64_t i;
@@ -50,10 +51,10 @@ uint64_t my_process_inc(uint64_t argc, char *argv[])
   if (use_sem)
     sem_close(SEM_ID);
 
-  return 0;
+  return;
 }
 
-uint64_t test_sync()
+void test_sync()
 { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
@@ -66,7 +67,7 @@ uint64_t test_sync()
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++)
   {
-    pids[i] = sys_p_create_asm(my_process_inc, 3, argv1, 0, NULL);
+    pids[i] = sys_p_create_asm((void(*)(int, char **)) my_process_inc, 3, argv1, 0, NULL);
     pids[i + TOTAL_PAIR_PROCESSES] = sys_p_create_asm((void (*)(int, char **)) my_process_inc, 3, argv2, 0, NULL);
   }
 
@@ -78,5 +79,5 @@ uint64_t test_sync()
 
   printfColor("Final value: %d\n", white, global);
 
-  return 0;
+  return;
 }

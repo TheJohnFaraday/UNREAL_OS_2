@@ -8,6 +8,6 @@
 #include "stdioAPI.h"
 #include "syscallsAPI.h"
 
-uint64_t test_sync(); //{n, use_sem, 0}
+void test_sync(); //{n, use_sem, 0}
 
 #endif

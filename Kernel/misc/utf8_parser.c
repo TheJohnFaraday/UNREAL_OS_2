@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <utf8_parser.h>
 // maps state and transition byte class to new state
 static uint8_t transition_table[23][3] = {{0, 0, 0}, {0, 2, 2}, {0, 3, 3}, {0, 5, 8}, {0, 6, 7}, {0, 11, 6}, {0, 10, 4}, {0, 4, 5}, {8, 1, 3}, {7, 1, 3}, {7, 7, 3}, {7, 9, 3}, {6, 7, 3}, {6, 9, 3}, {4, 7, 2}, {5, 1, 2}, {5, 9, 2}, {3, 1, 2}, {3, 7, 2}, {3, 9, 2}, {2, 1, 0}, {2, 7, 0}, {2, 9, 0}};

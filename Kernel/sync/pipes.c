@@ -1,6 +1,9 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <stdint.h>
 #include <pipes.h>
 #include <video.h>
+#include <sem.h>
 
 static int getFreePipe();
 static uint32_t newPipe(uint32_t pipeId);
@@ -28,8 +31,11 @@ static uint32_t newPipe(uint32_t pipeId)
     pipe->writeIdx = 0;
     pipe->totalProcesses = 0;
 
-    int rLock = sem_open(baseSemID++, 0);
-    int wLock = sem_open(baseSemID++, 0);
+    char * rLockName = "rLock";
+    char * wLockName = "wLock";
+
+    int rLock = sem_open(baseSemID++, rLockName, 0);
+    int wLock = sem_open(baseSemID++, wLockName, 0);
     if (rLock == -1 || wLock == -1)
     {
         // mutex failure

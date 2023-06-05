@@ -9,6 +9,7 @@
 #define ALIGNMENT 16
 #define BYTE_GROUP 4
 #define REGISTERS 17
+#define ENTER '\x0d'
 
 typedef char args[MAX_PARAMS][MAX_LENGHT];
 
@@ -46,33 +47,6 @@ void wc(int argsNum, char **argsVec);
 void filter(int argsNum, char **argsVec);
 void phylo(int argsNum, char **argsVec);
 void sem_test(int argsNum, char **argsVec);
-
-static commands_style commands[] = {
-    {"biggie", biggie, 0},
-    {"smalls", smalls, 0},
-    {"inforeg", inforeg, 0},
-    {"help", help, 0},
-    {"divzero", div_zero_exception_tester, 0},
-    {"invopcode", invalid_opcode_exception_tester, 0},
-    {"time", time, 0},
-    {"clear", clear, 0},
-    {"tron", tron_command, 0},
-    {"getContent", getContent, 1},
-    {"memTest", mem_test, 0},
-    {"procTest", proc_test, 0},
-    {"prioTest", prio_test, 0},
-    {"mem", dump, 0},
-    {"ps", ps, 0},
-    {"loop", loop, 1},
-    {"kill", kill_command, 1},
-    {"nice", nice, 2},
-    {"block", block_command, 1},
-    {"cat", cat, 1},
-    {"wc", wc, 0},
-    {"filter", filter, 0},
-    {"phylo", phylo, 0},
-    {"semTest", sem_test, 0} // Chequear cuantos args toma
-};
 
 void invalidOpcodeTester();
 

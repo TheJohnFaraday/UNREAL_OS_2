@@ -426,15 +426,15 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	call sys_toggle
 	jmp .end_sys
 
-.pipe_open_handler
+.pipe_open_handler:
 	call sys_open_pipe
 	jmp .end_sys
 
-.pipe_close_handler
+.pipe_close_handler:
 	call sys_close_pipe
 	jmp .end_sys
 
-.pipe_print_handler
+.pipe_print_handler:
 	call sys_print_pipes
 	jmp .end_sys
 
