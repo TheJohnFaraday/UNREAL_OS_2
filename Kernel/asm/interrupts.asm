@@ -75,10 +75,8 @@ WAITPID equ 19
 PRIORITY equ 20
 TOGGLE equ 21
 OPEN_PIPE equ 22
-READ_PIPE equ 23
-WRITE_PIPE equ 24
-CLOSE_PIPE equ 25 
-PRINT_PIPES equ 26
+CLOSE_PIPE equ 23
+PRINT_PIPES equ 24
 
 SECTION .text
 
@@ -330,34 +328,11 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 	;Pipes Syscalls
 	cmp rbx, OPEN_PIPE 
 	je .pipe_open_handler
-	cmp rbx, READ_PIPE 
-	je .pipe_read_handler
-	cmp rbx, WRITE_PIPE 
-	je .pipe_write_handler
 	cmp rbx, CLOSE_PIPE 
 	je .pipe_close_handler
 	cmp rbx, PRINT_PIPES 
 	je .pipe_print_handler
 
-.pipe_open_handler
-	call sys_open_pipe
-	jmp .end_sys
-
-.pipe_read_handler
-	call sys_read_pipe
-	jmp .end_sys
-
-.pipe_write_handler
-	call sys_write_pipe
-	jmp .end_sys
-
-.pipe_close_handler
-	call sys_close_pipe
-	jmp .end_sys
-
-.pipe_print_handler
-	call sys_print_pipes
-	jmp .end_sys
 
 .end_sys:
 	mov rsp,rbp
@@ -449,6 +424,18 @@ systemCallsRoutine:  ;Arguments received depending on the system call
 
 .toggle_handler:
 	call sys_toggle
+	jmp .end_sys
+
+.pipe_open_handler
+	call sys_open_pipe
+	jmp .end_sys
+
+.pipe_close_handler
+	call sys_close_pipe
+	jmp .end_sys
+
+.pipe_print_handler
+	call sys_print_pipes
 	jmp .end_sys
 
 _exception0Handler:

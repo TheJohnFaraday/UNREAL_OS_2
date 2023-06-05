@@ -237,14 +237,10 @@ void block_command(int argsNum, char **argsVec)
 void cat(int argsNum, char **argsVec)
 {
     putChar('\n');
-    char current;
-    while ((current = getChar()) != EOF)
-    {
-        if(current == ENTER){
-            current = '\n';
-        }
-        putChar(current);
-    }
+    int i = 0;
+    while(argsVec[1][i] != '\0' && argsVec[1][i] != '\n')
+        putChar(argsVec[1][i++]);
+    putChar("\n");
 }
 
 void wc(int argsNum, char **argsVec)
@@ -253,7 +249,7 @@ void wc(int argsNum, char **argsVec)
     int count = 1;
     putChar('\n');
 
-    while ((current = getChar()) != EOF)
+    while ((current = getChar()) != EOF && current != '\0')
     {
        if(current == ENTER){
             current = '\n';
