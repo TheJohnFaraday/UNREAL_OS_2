@@ -34,7 +34,7 @@ void newInputToConsole(const struct pressedKeys *keyboardState)
         console_read_buffer_size += utf8_size;
     }
     // Unblock the process only if the buffer was previously empty
-    if (console_read_buffer_size == utf8_size && reading)
+    if (console_read_buffer_size == utf8_size && reading && mapped_utf8)
     {
         reading = 0;
         unblock_keyboard();

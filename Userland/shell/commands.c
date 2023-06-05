@@ -248,8 +248,9 @@ void wc(int argsNum, char **argsVec)
 {
     char current;
     int count = 1;
+    putChar('\n');
 
-    while ((current = getChar()) != '\0')
+    while ((current = getChar()) != EOF)
     {
        putChar(current);
         if (current == '\n')
