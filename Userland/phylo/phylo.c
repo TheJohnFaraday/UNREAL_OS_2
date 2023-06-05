@@ -14,7 +14,7 @@ static int philosophersCount = 0;
 static int tableMutex;
 static int working;
 
-#define RIGHT(i) ((i + 1)) % (philosophersCount)
+#define RIGHT(i) ((i) + 1) % (philosophersCount)
 #define LEFT(i) ((i) + philosophersCount - 1) % (philosophersCount)
 
 int addPhylo();

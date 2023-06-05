@@ -39,7 +39,7 @@ static commands_style commands[] = {
     {"wc", wc, 0},
     {"filter", filter, 0},
     {"phylo", phylo, 0},
-    {"semTest", sem_test, 0} // Chequear cuantos args toma
+    {"semTest", sem_test, 2} 
 };
 
 void shell();

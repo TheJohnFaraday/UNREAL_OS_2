@@ -28,7 +28,7 @@ void sem_create(uint32_t id, char *name, uint32_t value)
     }
 
     sem->id = id;
-    sem->value = 1; // Mirar esto porq no deberia estar hardcodeado
+    sem->value = 1; 
     sem->linkedProcesses = 0;
     sem->blockedPIDsCount = 0;
     sem->mutex = 0;
@@ -130,6 +130,10 @@ int sem_close(uint32_t id)
         for (int i = 0; i < MAX_LENGTH; i++)
         {
             sem->name[i] = 0;
+        }
+        for (int i = 0; i < MAX_BLOCKED_PIDS; i++)
+        {
+            sem->blockedPIDs[i] = 0;
         }
         return 0;
     }

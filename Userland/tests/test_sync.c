@@ -3,7 +3,7 @@
 #include <test_sync.h>
 
 #define SEM_NAME "test_semaphore"
-#define TOTAL_PAIR_PROCESSES 10
+#define TOTAL_PAIR_PROCESSES 4
 
 int64_t global; // shared memory
 
@@ -28,8 +28,8 @@ void my_process_inc(uint64_t argc, char *argv[])
     return;
   if ((inc = satoi(argv[2])) == 0)
     return;
-
-  use_sem = 1;
+  if ((use_sem = satoi(argv[3])) < 0)
+    return;
 
   if (use_sem)
     if (!sem_open(SEM_ID, SEM_NAME, 1))
@@ -54,12 +54,12 @@ void my_process_inc(uint64_t argc, char *argv[])
   return;
 }
 
-void test_sync()
+void test_sync(char **argsVec)
 { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  char *argv1[] = {"inc_process", "10", "1"};
-  char *argv2[] = {"dec_process", "10", "-1"};
+  char *argv1[] = {"inc_process", argsVec[1], "1", argsVec[2]};
+  char *argv2[] = {"dec_process", argsVec[1], "-1", argsVec[2]};
 
   global = 0;
 
@@ -67,8 +67,8 @@ void test_sync()
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++)
   {
-    pids[i] = sys_p_create_asm((void(*)(int, char **)) my_process_inc, 3, argv1, 0, NULL);
-    pids[i + TOTAL_PAIR_PROCESSES] = sys_p_create_asm((void (*)(int, char **)) my_process_inc, 3, argv2, 0, NULL);
+    pids[i] = sys_p_create_asm((void(*)(int, char **)) my_process_inc, 4, argv1, 0, NULL);
+    pids[i + TOTAL_PAIR_PROCESSES] = sys_p_create_asm((void (*)(int, char **)) my_process_inc, 4, argv2, 0, NULL);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++)
@@ -77,7 +77,7 @@ void test_sync()
     waitpid(pids[i + TOTAL_PAIR_PROCESSES]);
   }
 
-  printfColor("Final value: %d\n", white, global);
+  printfColor("\nFinal value: %d\n", white, global);
 
   return;
 }

@@ -27,14 +27,14 @@ void help(int argsNum, char **argsVec)
     printfColor(" * procTest -> Run the round robin scheduler Test\n", white);
     printfColor(" * prioTest -> Run the round robin priority based Tess\n", white);
     printfColor(" * mem -> Report a snapshot of the current state of the memory\n", white);
-    printfColor(" * semTest -> Run a semaphore test with syncronization\n", white);
+    printfColor(" * semTest -> Run a semaphore test with syncronization (semTest n use_sem)\n", white);
     printfColor(" * nice -> Change the priority of a process\n", white);
     printfColor(" * block -> Block a process Ex: block (PID)\n", white);
     printfColor(" * kill -> Kill a process Ex: kill (PID)\n", white);
     printfColor(" * loop -> Print the ID of the process every X seconds Ex: loop (seconds)\n", white);
-    printfColor(" * cat -> Print the content of a file Ex: cat (filename)\n", white);
-    printfColor(" * wc -> Print the number of lines, words and characters of a file Ex: wc (filename)\n", white);
-    printfColor(" * filter -> Print the content of a file in uppercase Ex: filter (filename)\n", white);
+    printfColor(" * cat -> Print the content of a file Ex: cat (string)\n", white);
+    printfColor(" * wc -> Print the number of lines, words and characters of a file Ex: wc (string)\n", white);
+    printfColor(" * filter -> Print the content of a file in uppercase Ex: filter (string)\n", white);
     printfColor(" * phylo -> Run the philosophers problem\n", white);
     printfColor(" * clear -> Clears the screen\n", white);
 
@@ -188,7 +188,7 @@ void dump(int argsNum, char **argsVec)
 
 void sem_test(int argsNum, char **argsVec)
 {
-    test_sync();
+    test_sync(argsVec);
 }
 
 void ps(int argsNum, char **argsVec)
