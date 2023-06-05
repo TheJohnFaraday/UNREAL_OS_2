@@ -67,7 +67,7 @@ static commands_style commands[] = {
     {"kill", kill_command, 1},
     {"nice", nice, 2},
     {"block", block_command, 1},
-    {"cat", cat, 1},
+    {"cat", cat, 0},
     {"wc", wc, 0},
     {"filter", filter, 0},
     {"phylo", phylo, 0},

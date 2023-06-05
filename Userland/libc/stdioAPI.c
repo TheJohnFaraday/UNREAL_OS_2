@@ -21,8 +21,8 @@ char getChar()
 	char c[2] = {0};
 	// We are going to read only one character
 	// Fd is one because we are reading from keyboard
-	__uint64_t count = sys_read_asm(1, c, 1);
-	if (count)
+	int count = sys_read_asm(1, c, 1);
+	if (count > 0)
 		return c[0];
 	else
 		return -1;

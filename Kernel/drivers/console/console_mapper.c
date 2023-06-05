@@ -2,6 +2,7 @@
 #include <registorsSnapshot.h>
 #include <scheduler.h>
 #include <console_driver.h>
+#include <video.h>
 
 // No scancode redef like undef
 #define UNDEF (char *)0
@@ -78,8 +79,9 @@ const char *console_mapper(const struct pressedKeys *keyboardState)
 				kill_foreground(pid);
 			}
 			if (*(current_language_mapping->main_map[keycode]) == 'd')
-			{
+			{	
 				onEOF();
+				unblock_keyboard();
 			}
 		}
 		else if (specialKey == current_language_mapping->specialKeys.alt_gr)
