@@ -5,8 +5,6 @@
 #include "syscallsAPI.h"
 
 uint64_t open_pipe(uint64_t pipeId);
-uint64_t read_pipe(uint64_t pipeId);
-uint64_t write_pipe(uint64_t pipeId, char *str);
 uint64_t close_pipe(uint64_t pipeId);
 uint64_t print_pipes();
 

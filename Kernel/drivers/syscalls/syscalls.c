@@ -60,16 +60,6 @@ uint64_t sys_open_pipe(uint64_t pipeId)
     return (uint64_t)pipeOpen((uint32_t)pipeId);
 }
 
-uint64_t sys_read_pipe(uint64_t pipeId)
-{
-    return (uint64_t)pipeRead((uint32_t)pipeId);
-}
-
-uint64_t sys_write_pipe(uint64_t pipeId, char *str)
-{
-    return (uint64_t)pipeWrite((uint32_t)pipeId, str);
-}
-
 uint64_t sys_close_pipe(uint64_t pipeId)
 {
     return (uint64_t)pipeClose((uint32_t)pipeId);
