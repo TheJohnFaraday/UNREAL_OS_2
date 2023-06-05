@@ -10,6 +10,7 @@
 #include <MemoryManager.h>
 #include <scheduler.h>
 #include <sem.h>
+#include <pipes.h>
 
 extern uint64_t registerBuffer;
 
@@ -44,6 +45,8 @@ uint64_t sys_write(int fd, char *str, int length, Color color)
         case STDERR:
             printStringColor(str, red);
             return length;
+        default:
+            return -1;
         }
     }
     else

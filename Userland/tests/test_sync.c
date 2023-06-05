@@ -67,7 +67,7 @@ uint64_t test_sync()
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++)
   {
     pids[i] = sys_p_create_asm(my_process_inc, 3, argv1, 0, NULL);
-    pids[i + TOTAL_PAIR_PROCESSES] = sys_p_create_asm(my_process_inc, 3, argv2, 0, NULL);
+    pids[i + TOTAL_PAIR_PROCESSES] = sys_p_create_asm((void (*)(int, char **)) my_process_inc, 3, argv2, 0, NULL);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++)

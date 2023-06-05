@@ -186,7 +186,7 @@ void dump(int argsNum, char **argsVec)
 
 void sem_test(int argsNum, char **argsVec)
 {
-    uint64_t result = test_sync();
+    test_sync();
 }
 
 void ps(int argsNum, char **argsVec)

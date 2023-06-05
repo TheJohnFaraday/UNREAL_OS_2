@@ -84,7 +84,7 @@ char **args(char **argv, int argc)
         {
             printString("[Kernel] ERROR: Malloc failure.");
             printNewline();
-            return -1;
+            return NULL;
         }
         strcpy(argv[i], buffer[i]);
     }

@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <scheduler.h>
 #include <keyboard_block_stack.h>
+#include <console_driver.h>
 
 #define READ_BUFFER_SIZE_MAX 100
 
