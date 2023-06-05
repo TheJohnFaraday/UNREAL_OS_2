@@ -4,6 +4,10 @@
 #include <stdint.h>
 #include "syscallsAPI.h"
 
+#define FG 1
+#define BG 0
+#define STANDARD 0
+
 uint64_t p_create(void (*entryPoint)(int, char **), int argc, char **argv,
                   int fg, int *fd);
 void p_display();

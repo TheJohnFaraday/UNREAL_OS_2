@@ -49,7 +49,7 @@ struct vbe_mode_info_structure
 } __attribute__((packed));
 
 // Current positions
-uint16_t x = 0, y = 0;
+uint16_t x_current_pos = 0, y_current_pos = 0;
 Color default_background = {0, 0, 0};
 
 // receives a pointer to a bitmap, its width and height  a position on the screen to draw it and a forground and background color and draws it
@@ -108,8 +108,8 @@ void setBackgroundColor()
 			putPixel((uint16_t)i, (uint16_t)j, default_background);
 		}
 	}
-	x = 0;
-	y = 0;
+	x_current_pos = 0;
+	y_current_pos = 0;
 }
 
 void printChar(char c)
@@ -119,12 +119,12 @@ void printChar(char c)
 
 void printNewline()
 {
-	x = 0;
-	y += get_font_glyph_height();
-	if (y > screen_data->height - get_font_glyph_height())
+	x_current_pos = 0;
+	y_current_pos += get_font_glyph_height();
+	if (y_current_pos > screen_data->height - get_font_glyph_height())
 	{
 		setBackgroundColor();
-		y = 0;
+		y_current_pos = 0;
 	}
 }
 
@@ -139,18 +139,18 @@ void print_utf8(utf8_sequence utf8, uint64_t count, Color color)
 	}
 	if (count == 1 && *utf8 == 0x7f)
 	{
-		x -= get_font_glyph_width();
+		x_current_pos -= get_font_glyph_width();
 		void *bitmap_pointer = get_bitmap_pointer((utf8_sequence) " ", 1);
-		draw_bitmap(bitmap_pointer, x, y, get_font_glyph_width() / 8, get_font_glyph_height(), color, default_background);
+		draw_bitmap(bitmap_pointer, x_current_pos, y_current_pos, get_font_glyph_width() / 8, get_font_glyph_height(), color, default_background);
 		return;
 	}
 
 	void *bitmap_pointer = get_bitmap_pointer(utf8, count);
 	if (bitmap_pointer == (void *)0)
 		return;
-	draw_bitmap(bitmap_pointer, x, y, get_font_glyph_width() / 8, get_font_glyph_height(), color, default_background);
-	x += get_font_glyph_width();
-	if (x > screen_data->width - get_font_glyph_width())
+	draw_bitmap(bitmap_pointer, x_current_pos, y_current_pos, get_font_glyph_width() / 8, get_font_glyph_height(), color, default_background);
+	x_current_pos += get_font_glyph_width();
+	if (x_current_pos > screen_data->width - get_font_glyph_width())
 		printNewline();
 }
 
@@ -290,18 +290,18 @@ void printBlockColor(Color color)
 	{
 		for (int j = 0; j < 16; j++)
 		{
-			putPixel(x + j, y + i, color);
+			putPixel(x_current_pos + j, y_current_pos + i, color);
 		}
 	}
-	x += CHAR_HEIGHT;
-	if (x > screen_data->width - CHAR_HEIGHT)
+	x_current_pos += CHAR_HEIGHT;
+	if (x_current_pos > screen_data->width - CHAR_HEIGHT)
 		printNewline();
 }
 
 int printBlockAt(uint16_t x_coor, uint16_t y_coor, Color color)
 {
 
-	if (x_coor > screen_data->width - BLOCK_SIZE || y_coor > screen_data->height - BLOCK_SIZE || x_coor < 0 || y_coor < 0)
+	if (x_coor > screen_data->width - BLOCK_SIZE || y_coor > screen_data->height - BLOCK_SIZE)
 	{
 		return 1;
 	}

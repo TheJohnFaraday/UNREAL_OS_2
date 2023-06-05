@@ -393,7 +393,12 @@ uint64_t kill(uint64_t pid)
 
 uint64_t kill_foreground(uint64_t pid)
 {
-      if (getProcess(pid)->fg)
+      PNode * aux = getProcess(pid);
+      if(aux == NULL){
+            return -1;
+      }
+      
+      if (aux->fg)
       {
             return kill(pid);
       }

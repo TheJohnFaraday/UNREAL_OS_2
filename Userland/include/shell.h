@@ -12,6 +12,8 @@
 #define MAX_READ 100
 #define MAX_LINE 10
 #define MAX_COMMAND 3
+#define WITH_PIPE 1
+#define NOT_PIPE 0
 
 static commands_style commands[] = {
     {"biggie", biggie, 0},

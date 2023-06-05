@@ -252,7 +252,7 @@ void wc(int argsNum, char **argsVec)
     int count = 1;
     putChar('\n');
 
-    while ((current = getChar()) != EOF && current != '\0')
+    while ((int)(current = getChar()) != EOF && current != '\0')
     {
        if(current == ENTER){
             current = '\n';
@@ -285,8 +285,8 @@ void filter(int argsNum, char **argsVec)
 {
     char current;
     putChar('\n');
-    
-    while ((current = getChar()) != EOF && current != '\0')
+
+    while ((int)(current = getChar()) != EOF && current != '\0')
     {
         if (is_vowel(current))
         {

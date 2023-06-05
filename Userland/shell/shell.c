@@ -62,36 +62,48 @@ void waiting_command()
     // Now i use strtok for delete the spaces
     char *toRead = my_strtok(line, SPACE);
     char **tokens = malloc(sizeof(char *) * MAX_LINE);
+    if (tokens == NULL) {
+      printfColor("\nFailed to allocate memory for tokens.\n", white);
+      continue;
+    }
 
     // Now i consume the args
     int index = 0;
     while (toRead != NULL)
     {
       tokens[index] = malloc(sizeof(char) * MAX_LENGHT);
+      if (tokens[index] == NULL) {
+        printfColor("\nFailed to allocate memory for token.\n", white);
+        index = 0;
+        freeResources(tokens, index);
+        break;
+      }
       strcpy(tokens[index++], toRead);
       toRead = my_strtok(NULL, SPACE);
     }
 
-    for (int i = 0; i < index; i++)
-    {
-      if (!strcmp(tokens[i], "|") && i > 0 && i + 1 < index)
+    if(index){
+      for (int i = 0; i < index; i++)
       {
-        parsing_pipe_commands(tokens, index ,i);
-        pipe_exec++;
-        break;
+        if (!strcmp(tokens[i], "|") && i > 0 && i + 1 < index)
+        {
+          parsing_pipe_commands(tokens, index ,i);
+          pipe_exec++;
+          break;
+        }
       }
-    }
 
-    if(!pipe_exec){
-      exec_command(tokens, index, 0, 0, 1);
-    }
+      if(!pipe_exec){
+        exec_command(tokens, index, NOT_PIPE, STANDARD, FG);
+      }
 
-    for (int i = 0; i < index; i++)
-    {
-      free(tokens[i]);
-    }
+      for (int i = 0; i < index; i++)
+      {
+        free(tokens[i]);
+      }
 
-    free(tokens);
+      free(tokens);
+      }
   }
 }
 
@@ -110,7 +122,7 @@ int exec_command(char **argsVec, int argsNum, int isPipe, int *fd, int fg)
       if (!strcmp(argsVec[argsNum - 1], "&"))
       {
         argsNum--;
-        fg = 0;
+        fg = BG;
       }
       // Checking if the amount of args is correct
       if (commands[i].args == argsNum-1)
@@ -129,7 +141,7 @@ int exec_command(char **argsVec, int argsNum, int isPipe, int *fd, int fg)
     }
     else {
       return p_create((void (*)(int, char **))commands[to_execute].function, argsNum,
-              argsVec, fg, 0);
+              argsVec, fg, STANDARD);
     }
   }
   else if (found && !args_check)
@@ -151,7 +163,18 @@ void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos)
   //We separate the two commands
   uint64_t pids[2];
   char ** argsVec1 = malloc(sizeof(char *) * MAX_COMMAND);
+  if (argsVec1 == NULL) {
+    printfColor("\nFailed to allocate memory for argsVec1.\n", white);
+    return;
+  }
+
   char ** argsVec2 = malloc(sizeof(char *) * MAX_COMMAND);
+  if (argsVec2 == NULL) {
+    printfColor("\nFailed to allocate memory for argsVec2.\n", white);
+    free(argsVec1);
+    return;
+  }
+
   int argc1 = 0;
   int argc2 = 0;
 
@@ -161,15 +184,22 @@ void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos)
   for (; i < pipePos; i++)
   {
       argsVec1[i] = malloc(sizeof(char) * MAX_LENGHT);
+      if (argsVec1[i] == NULL) {
+        printfColor("\nFailed to allocate memory for argsVec1[%d].\n", white, i);
+        freeResources(argsVec1, argc1);
+        free(argsVec2);
+        return;
+      }
       strcpy(argsVec1[i], argsVec[i]);
       argc1++;
   }
   
-   pids[0] = exec_pipe_command(argsVec1, argc1, 0, pipe, 1);
+   pids[0] = exec_pipe_command(argsVec1, argc1, STDIN, pipe, FG);
 
    if (pids[0] == -1){
         close_pipe(pipe);
         freeResources(argsVec1, argc1);
+        free(argsVec2);
         return;
    }
 
@@ -178,18 +208,17 @@ void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos)
   for (int j = 0; i < argsNum; j++)
   {
       argsVec2[j] = malloc(sizeof(char) * MAX_LENGHT);
+      if (argsVec2[j] == NULL) {
+        printfColor("\nFailed to allocate memory for argsVec2[%d].\n", white, j);
+        freeResources(argsVec1, argc1);
+        freeResources(argsVec2, argc2);
+        return;
+      }
       strcpy(argsVec2[j], argsVec[i++]);
       argc2++;
   }
 
-  pids[1] = exec_pipe_command(argsVec2, argc2, pipe, 1, 1);
-
-  if (pids[1] == -1){
-        close_pipe(pipe);
-        freeResources(argsVec1, argc1);
-        freeResources(argsVec2, argc2);
-        return;
-   }
+  pids[1] = exec_pipe_command(argsVec2, argc2, pipe, STDOUT, FG);
 
     close_pipe(pipe);
 
@@ -206,7 +235,7 @@ int exec_pipe_command(char **argsVec, int argsNum, int fdIn, int fdOut, int fg){
       fd[0] = fdIn;
       fd[1] = fdOut;
 
-      return exec_command(argsVec, argsNum, 1, fd, fg);
+      return exec_command(argsVec, argsNum, WITH_PIPE, fd, fg);
 }
 
 static void freeResources(char **argsVec, int argsNum){
