@@ -13,6 +13,7 @@
 #include <semLib.h>
 
 static int pipe_fd = 2;
+static void freeResources(char **argsVec, int argsNum);
 
 void shell()
 {
@@ -60,12 +61,6 @@ void waiting_command()
     line[count] = '\0';
     // Now i use strtok for delete the spaces
     char *toRead = my_strtok(line, SPACE);
-
-    // char command[MAX_LENGHT] = {0};
-    // Consume the command
-    // strcpy(command, toRead);
-    // toRead = my_strtok (NULL, SPACE);
-
     char **tokens = malloc(sizeof(char *) * MAX_LINE);
 
     // Now i consume the args
@@ -88,7 +83,7 @@ void waiting_command()
     }
 
     if(!pipe_exec){
-      exec_command(tokens, index - 1, 0, 0, 1);
+      exec_command(tokens, index, 0, 0, 1);
     }
 
     for (int i = 0; i < index; i++)
@@ -112,13 +107,13 @@ int exec_command(char **argsVec, int argsNum, int isPipe, int *fd, int fg)
     {
       found = 1;
       // BackGround?
-     // if (!strcmp(argsVec[argsNum - 1], "&"))
-      //{
-      //  argsNum--;
-      //  fg = 0;
-      //}
+      if (!strcmp(argsVec[argsNum - 1], "&"))
+      {
+        argsNum--;
+        fg = 0;
+      }
       // Checking if the amount of args is correct
-      if (commands[i].args == argsNum)
+      if (commands[i].args == argsNum-1)
       {
         args_check = 1;
         to_execute = i;
@@ -129,12 +124,12 @@ int exec_command(char **argsVec, int argsNum, int isPipe, int *fd, int fg)
   if (found && args_check)
   {
     if(isPipe){
-      return p_create((void (*)(int, char **))commands[to_execute].function, argsNum + 1,
+      return p_create((void (*)(int, char **))commands[to_execute].function, argsNum,
              argsVec, fg, fd);
     }
     else {
-      return p_create((void (*)(int, char **))commands[to_execute].function, argsNum + 1,
-              argsVec, 1, 0);
+      return p_create((void (*)(int, char **))commands[to_execute].function, argsNum,
+              argsVec, fg, 0);
     }
   }
   else if (found && !args_check)
@@ -153,8 +148,6 @@ int exec_command(char **argsVec, int argsNum, int isPipe, int *fd, int fg)
 void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos) 
 { 
   
-  printfColor("\n PIPE command! \n", white); 
-
   //We separate the two commands
   uint64_t pids[2];
   char ** argsVec1 = malloc(sizeof(char *) * MAX_COMMAND);
@@ -176,7 +169,7 @@ void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos)
 
    if (pids[0] == -1){
         close_pipe(pipe);
-        //Not forget to free resources
+        freeResources(argsVec1, argc1);
         return;
    }
 
@@ -193,29 +186,15 @@ void parsing_pipe_commands(char **argsVec, int argsNum ,int pipePos)
 
   if (pids[1] == -1){
         close_pipe(pipe);
-        //Not forget to free resources
+        freeResources(argsVec1, argc1);
+        freeResources(argsVec2, argc2);
         return;
    }
 
-    //int a = -1;
-
-    //write_pipe(pipe, (char *)&a);
-    //sem_wait(pids[0]);
     close_pipe(pipe);
 
-    for (int i = 0; i < argc1; i++)
-    {
-      free(argsVec1[i]);
-    }
-    
-    free(argsVec1);
-
-    for (int i = 0; i < argc2; i++)
-    {
-      free(argsVec2[i]);
-    }
-    
-    free(argsVec2);
+    freeResources(argsVec1, argc1);
+    freeResources(argsVec2, argc2);
 
     return; 
 
@@ -227,5 +206,13 @@ int exec_pipe_command(char **argsVec, int argsNum, int fdIn, int fdOut, int fg){
       fd[0] = fdIn;
       fd[1] = fdOut;
 
-      return exec_command(argsVec, argsNum-1, 1, fd, fg);
+      return exec_command(argsVec, argsNum, 1, fd, fg);
+}
+
+static void freeResources(char **argsVec, int argsNum){
+    for (int i = 0; i < argsNum; i++)
+    {
+      free(argsVec[i]);
+    }
+    free(argsVec);
 }

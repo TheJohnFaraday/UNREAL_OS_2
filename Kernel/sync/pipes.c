@@ -30,6 +30,7 @@ static uint32_t newPipe(uint32_t pipeId)
     pipe->readIdx = 0;
     pipe->writeIdx = 0;
     pipe->totalProcesses = 0;
+    memset(pipe->buffer, 0, LEN);
 
     char * rLockName = "rLock";
     char * wLockName = "wLock";
@@ -85,6 +86,7 @@ int pipeRead(char * str, uint32_t pipeId)
     //sem_wait(pipe->readLock);
 
     str[0] = pipe->buffer[pipe->readIdx];
+    pipe->buffer[pipe->readIdx] = 0;
     pipe->readIdx = (pipe->readIdx + 1) % LEN;
 
     //sem_post(pipe->writeLock);

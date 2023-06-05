@@ -284,7 +284,9 @@ int is_vowel(char c)
 void filter(int argsNum, char **argsVec)
 {
     char current;
-    while ((current = getChar()) != '\0')
+    putChar('\n');
+    
+    while ((current = getChar()) != EOF && current != '\0')
     {
         if (is_vowel(current))
         {
