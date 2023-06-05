@@ -120,34 +120,21 @@ int sem_close(uint32_t id)
     {
         return -1;
     }
+    if (sem->linkedProcesses == 1)
+    {
+        sem->id = 0;
+        sem->value = 0;
+        sem->linkedProcesses = 0;
+        sem->blockedPIDsCount = 0;
+        sem->mutex = 0;
+        for (int i = 0; i < MAX_LENGTH; i++)
+        {
+            sem->name[i] = 0;
+        }
+        return 0;
+    }
     sem->linkedProcesses--;
     return 0;
-
-    // sem_t * semPtr = getSem(id);
-    // if (semPtr == NULL) {
-    //     return -1;
-    // }
-    // semPtr->linkedProcesses--;
-    // if (semPtr->linkedProcesses > 0) {
-    //     return 0;
-    // }
-
-    // for (int i = 0; i < MAX_BLOCKED_PIDS; i++) {
-    //     if (semPtr->blockedPIDs[i] != 0) {
-    //         unblock(semPtr->blockedPIDs[i]);
-    //         semPtr->blockedPIDs[i] = 0;
-    //     }
-    // }
-
-    // semPtr->value = 0;
-    // semPtr->id = 0;
-    // semPtr->blockedPIDsCount = 0;
-    // semPtr->linkedProcesses = 0;
-    // semPtr->mutex = 0;
-    // for (int i = 0; i < MAX_LENGTH; i++) {
-    //     semPtr->name[i] = 0;
-    // }
-    // return 0;
 }
 
 sem_t *getSem(uint32_t id)
