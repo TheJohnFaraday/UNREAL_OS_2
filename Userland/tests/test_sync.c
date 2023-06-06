@@ -3,7 +3,7 @@
 #include <test_sync.h>
 
 #define SEM_NAME "test_semaphore"
-#define TOTAL_PAIR_PROCESSES 4
+#define TOTAL_PAIR_PROCESSES 10
 
 int64_t global; // shared memory
 

@@ -60,7 +60,8 @@ uint64_t read_from_console(void *dest, uint64_t count)
         block_keyboard(getCurrentPID());
     }
 
-    if(EOF_signal()){
+    if (EOF_signal())
+    {
         offEOF();
         return -1;
     }
@@ -73,19 +74,20 @@ uint64_t read_from_console(void *dest, uint64_t count)
     }
     console_read_buffer_size -= count;
 
-
     return count;
 }
 
-
-void onEOF(){
+void onEOF()
+{
     eof = 1;
 }
 
-void offEOF(){
+void offEOF()
+{
     eof = 0;
 }
 
-int EOF_signal(){
+int EOF_signal()
+{
     return eof;
 }

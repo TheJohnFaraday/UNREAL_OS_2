@@ -29,7 +29,7 @@ typedef struct
 
 uint32_t pipeOpen(uint32_t pipeId);
 int pipeClose(uint32_t pipeId);
-int pipeRead(char * str, uint32_t pipeId);
+int pipeRead(char *str, uint32_t pipeId);
 uint32_t pipeWrite(uint32_t pipeId, char *str);
 void dumpPipes();
 

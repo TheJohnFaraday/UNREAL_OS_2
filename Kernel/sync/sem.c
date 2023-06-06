@@ -28,7 +28,7 @@ void sem_create(uint32_t id, char *name, uint32_t value)
     }
 
     sem->id = id;
-    sem->value = 1; 
+    sem->value = 1;
     sem->linkedProcesses = 0;
     sem->blockedPIDsCount = 0;
     sem->mutex = 0;

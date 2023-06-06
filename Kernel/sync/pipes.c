@@ -32,8 +32,8 @@ static uint32_t newPipe(uint32_t pipeId)
     pipe->totalProcesses = 0;
     memset(pipe->buffer, 0, LEN);
 
-    char * rLockName = "rLock";
-    char * wLockName = "wLock";
+    char *rLockName = "rLock";
+    char *wLockName = "wLock";
 
     int rLock = sem_open(baseSemID++, rLockName, 0);
     int wLock = sem_open(baseSemID++, wLockName, 0);
@@ -75,7 +75,7 @@ int pipeClose(uint32_t pipeId)
     return 1;
 }
 
-int pipeRead(char * str, uint32_t pipeId)
+int pipeRead(char *str, uint32_t pipeId)
 {
     int idx = getPipeIdx(pipeId);
     if (idx == -1)
@@ -83,13 +83,13 @@ int pipeRead(char * str, uint32_t pipeId)
 
     Pipe *pipe = &pipesAdmin.pipes[idx];
 
-    //sem_wait(pipe->readLock);
+    // sem_wait(pipe->readLock);
 
     str[0] = pipe->buffer[pipe->readIdx];
     pipe->buffer[pipe->readIdx] = 0;
     pipe->readIdx = (pipe->readIdx + 1) % LEN;
 
-    //sem_post(pipe->writeLock);
+    // sem_post(pipe->writeLock);
 
     return 1;
 }
@@ -114,12 +114,12 @@ static int setCharAtIdx(int idx, char c)
 {
     Pipe *pipe = &pipesAdmin.pipes[idx];
 
-    //sem_wait(pipe->writeLock);
+    // sem_wait(pipe->writeLock);
 
     pipe->buffer[pipe->writeIdx] = c;
     pipe->writeIdx = (pipe->writeIdx + 1) % LEN;
 
-    //sem_post(pipe->readLock);
+    // sem_post(pipe->readLock);
 
     return 0;
 }

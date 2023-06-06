@@ -81,7 +81,7 @@ const char *console_mapper(const struct pressedKeys *keyboardState)
 				kill_foreground(pid);
 			}
 			if (*(current_language_mapping->main_map[keycode]) == 'd')
-			{	
+			{
 				onEOF();
 				unblock_keyboard();
 			}

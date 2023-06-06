@@ -46,8 +46,8 @@ void sys_yield();
 void sys_waitpid(uint64_t pid);
 void sys_priority(uint64_t pid, int priority);
 void sys_toggle(uint64_t pid);
-
 uint64_t sys_open_pipe(uint64_t pipeId);
 uint64_t sys_close_pipe(uint64_t pipeId);
 uint64_t sys_print_pipes();
+
 #endif

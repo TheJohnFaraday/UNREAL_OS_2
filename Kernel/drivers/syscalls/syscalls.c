@@ -28,7 +28,7 @@ uint64_t sys_read(int fd, char *str, int length)
     }
     else
     {
-        return pipeRead(str,whereFrom);
+        return pipeRead(str, whereFrom);
     }
 }
 

@@ -241,7 +241,7 @@ void cat(int argsNum, char **argsVec)
 {
     putChar('\n');
     int i = 0;
-    while(argsVec[1][i] != '\0' && argsVec[1][i] != '\n')
+    while (argsVec[1][i] != '\0' && argsVec[1][i] != '\n')
         putChar(argsVec[1][i++]);
     putChar('\n');
 }
@@ -254,11 +254,12 @@ void wc(int argsNum, char **argsVec)
 
     while ((int)(current = getChar()) != EOF && current != '\0')
     {
-       if(current == ENTER){
+        if (current == ENTER)
+        {
             current = '\n';
         }
 
-       putChar(current);
+        putChar(current);
         if (current == '\n')
         {
             count++;
